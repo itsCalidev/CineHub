@@ -1,0 +1,490 @@
+---
+// src/pages/peliculas.astro
+
+import Layout   from "../../layouts/Layout.astro";
+import Header   from "../../components/Header.astro";
+import Footer   from "../../components/Footer.astro";
+import MovieCard from "../../components/MovieCard.astro";
+import rawPeliculas from "../../data/movies/peliculas.json";
+
+interface Pelicula {
+  id:          number;
+  title:       string;
+  description: string;
+  image:       string;
+  trailer:     string;
+  categoria:   "reciente" | "clasico" | "proximo";
+  anio?:       number;
+  director?:   string;
+  duracion?:   string;
+  calificacion?: number | null;
+  genero?:     string[];
+}
+
+const peliculas = rawPeliculas as Pelicula[];
+
+// ── 2. FILTRADO (equivalente a los WHERE categoria=... del PHP original) ──────
+const recientes = peliculas.filter((p) => p.categoria === "reciente");
+const clasicas  = peliculas.filter((p) => p.categoria === "clasico");
+const proximas  = peliculas.filter((p) => p.categoria === "proximo");
+
+// Meta
+const totalPeliculas = peliculas.length;
+---
+
+<Layout
+  title="Películas"
+  description={`Explora nuestra colección de ${totalPeliculas} películas: estrenos recientes, clásicos imprescindibles y próximas novedades. Cine-Hub.`}
+>
+  <Header />
+
+  <main class="pt-[68px]">
+
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <!--  HERO SECTION                                              -->
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <section
+      class="relative w-full h-[55vh] min-h-[380px] flex items-center justify-center overflow-hidden"
+      aria-label="Cabecera de la sección Películas"
+    >
+      <!-- Imagen de fondo -->
+      <img
+        src="https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?w=1600&q=80"
+        alt="Sala de cine oscura con pantalla iluminada"
+        class="absolute inset-0 w-full h-full object-cover object-center scale-105"
+        loading="eager"
+      />
+
+      <!-- Capas de degradado para legibilidad -->
+      <div class="absolute inset-0 bg-[#0a0f1a]/75" />
+      <div class="absolute inset-0 bg-gradient-to-b from-[#0a0f1a]/60 via-transparent to-[#0a0f1a]" />
+
+      <!-- Partículas decorativas (CSS puro) -->
+      <div class="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        {Array.from({ length: 20 }, (_, i) => (
+          <span
+            class="absolute w-[2px] h-[2px] rounded-full bg-blue-400/40 animate-pulse-slow"
+            style={`
+              top: ${10 + (i * 47) % 80}%;
+              left: ${5 + (i * 37) % 90}%;
+              animation-delay: ${(i * 0.3) % 3}s;
+              animation-duration: ${2 + (i % 3)}s;
+            `}
+          />
+        ))}
+      </div>
+
+      <!-- Contenido centrado -->
+      <div class="relative z-10 text-center px-6 max-w-3xl mx-auto">
+        <!-- Breadcrumb -->
+        <nav aria-label="Breadcrumb" class="flex items-center justify-center gap-2 text-xs text-slate-500 mb-4">
+          <a href="/" class="hover:text-blue-400 transition-colors">Inicio</a>
+          <i class="fa-solid fa-chevron-right text-[8px]" />
+          <span class="text-blue-400">Películas</span>
+        </nav>
+
+        <!-- Etiqueta de sección -->
+        <div class="flex items-center justify-center gap-3 mb-4">
+          <span class="w-8 h-[2px] bg-blue-500 rounded" />
+          <span class="text-blue-400 font-['Barlow_Condensed'] uppercase tracking-[0.25em] text-xs font-semibold">
+            Nuestra Colección
+          </span>
+          <span class="w-8 h-[2px] bg-blue-500 rounded" />
+        </div>
+
+        <h1 class="font-['Bebas_Neue'] text-6xl sm:text-7xl lg:text-8xl text-white tracking-wide leading-none mb-4">
+          Peli<span class="text-blue-400">culas</span>
+        </h1>
+
+        <p class="text-slate-300 text-base sm:text-lg max-w-lg mx-auto mb-6">
+          Descubre nuestra colección curada de <span class="text-blue-400 font-semibold">{totalPeliculas} títulos</span>,
+          desde los últimos estrenos hasta los clásicos que debes ver.
+        </p>
+
+        <!-- Stats rápidas -->
+        <div class="flex items-center justify-center gap-8">
+          {[
+            { valor: recientes.length, label: "Recientes" },
+            { valor: clasicas.length,  label: "Clásicos"  },
+            { valor: proximas.length,  label: "Próximas"  },
+          ].map(({ valor, label }) => (
+            <div class="text-center">
+              <p class="font-['Bebas_Neue'] text-3xl text-blue-400 leading-none">{valor}</p>
+              <p class="text-slate-500 text-[10px] uppercase tracking-widest mt-0.5">{label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <!--  NAVEGACIÓN INTERNA (ANCLAJES)                            -->
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <section class="sticky top-[68px] z-40 bg-[#0a0f1a]/90 backdrop-blur-xl border-b border-slate-800/60 shadow-lg shadow-black/30">
+      <div class="max-w-7xl mx-auto px-6 lg:px-12">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 py-4">
+
+          <!-- Texto introductorio -->
+          <p class="text-slate-400 text-sm hidden md:block">
+            <span class="text-white font-medium hover:text-blue-400 transition-colors">{totalPeliculas} películas</span> en tres categorías
+          </p>
+
+          <!-- Botones de anclaje con smooth-scroll -->
+          <nav aria-label="Navegación por secciones" class="flex items-center gap-2 flex-wrap justify-center">
+            {[
+              {
+                href:  "#lo-mas-reciente",
+                icon:  "fa-solid fa-bolt",
+                label: "Lo más reciente",
+                count: recientes.length,
+                active: "group-hover:bg-blue-600 group-hover:text-white group-hover:border-blue-600",
+              },
+              {
+                href:  "#clasicos",
+                icon:  "fa-solid fa-film",
+                label: "Clásicos",
+                count: clasicas.length,
+                active: "group-hover:bg-amber-600 group-hover:text-white group-hover:border-amber-600",
+              },
+              {
+                href:  "#proximamente",
+                icon:  "fa-solid fa-calendar-days",
+                label: "Próximamente",
+                count: proximas.length,
+                active: "group-hover:bg-cyan-600 group-hover:text-white group-hover:border-cyan-600",
+              },
+            ].map(({ href, icon, label, count, active }) => (
+              <a
+                href={href}
+                class={`
+                  group inline-flex items-center gap-2 px-4 py-2 rounded-lg
+                  border border-slate-700/60
+                  text-slate-300 text-sm font-medium
+                  transition-all duration-200
+                  ${active}
+                `}
+              >
+                <i class={`${icon} text-xs opacity-70 group-hover:opacity-100`} />
+                {label}
+                <span class="px-1.5 py-0.5 rounded bg-slate-800 group-hover:bg-white/20 text-slate-400 group-hover:text-current text-[10px] font-bold transition-colors">
+                  {count}
+                </span>
+              </a>
+            ))}
+          </nav>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <!--  SECCIÓN: LO MÁS RECIENTE                                 -->
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <section
+      id="lo-mas-reciente"
+      class="py-20 bg-[#0a0f1a] scroll-mt-32"
+      aria-labelledby="heading-recientes"
+    >
+      <div class="max-w-7xl mx-auto px-6 lg:px-12">
+
+        <!-- Encabezado de sección -->
+        <header class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10 animate-on-scroll">
+          <div>
+            <div class="flex items-center gap-3 mb-2">
+              <div class="w-9 h-9 rounded-lg bg-blue-600/20 border border-blue-500/30 flex items-center justify-center">
+                <i class="fa-solid fa-bolt text-blue-400 text-sm" />
+              </div>
+              <span class="text-blue-400 font-['Barlow_Condensed'] uppercase tracking-[0.2em] text-xs font-semibold">
+                Estrenos 2024
+              </span>
+            </div>
+            <h2
+              id="heading-recientes"
+              class="font-['Bebas_Neue'] text-4xl sm:text-5xl text-white tracking-wide"
+            >
+              Lo más <span class="text-blue-400">Reciente</span>
+            </h2>
+          </div>
+          <a
+            href="/peliculas?cat=reciente"
+            class="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-blue-400 transition-colors group shrink-0"
+          >
+            Ver todo
+            <i class="fa-solid fa-arrow-right transition-transform group-hover:translate-x-1" />
+          </a>
+        </header>
+
+        <!-- Separador decorativo -->
+        <div class="flex items-center gap-4 mb-10">
+          <div class="h-[1px] flex-1 bg-gradient-to-r from-blue-600/50 to-transparent" />
+          <i class="fa-solid fa-star text-blue-500/50 text-xs" />
+          <div class="h-[1px] w-16 bg-slate-800" />
+        </div>
+
+        <!-- Grid de películas recientes -->
+        {recientes.length > 0 ? (
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {recientes.map((pelicula, i) => (
+              <div
+                class="animate-on-scroll"
+                style={`animation-delay: ${i * 0.12}s`}
+              >
+                <MovieCard
+                  title={pelicula.title}
+                  description={pelicula.description}
+                  image={pelicula.image}
+                  trailer={pelicula.trailer}
+                  anio={pelicula.anio}
+                  director={pelicula.director}
+                  duracion={pelicula.duracion}
+                  calificacion={pelicula.calificacion}
+                  genero={pelicula.genero}
+                />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p class="text-slate-500 text-center py-12">No hay estrenos disponibles por el momento.</p>
+        )}
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <!--  DIVISOR ENTRE SECCIONES                                  -->
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <div class="h-px bg-gradient-to-r from-transparent via-slate-700/50 to-transparent mx-12" aria-hidden="true" />
+
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <!--  SECCIÓN: CLÁSICOS                                        -->
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <section
+      id="clasicos"
+      class="py-20 bg-[#060b14] scroll-mt-32"
+      aria-labelledby="heading-clasicos"
+    >
+      <div class="max-w-7xl mx-auto px-6 lg:px-12">
+
+        <!-- Encabezado -->
+        <header class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10 animate-on-scroll">
+          <div>
+            <div class="flex items-center gap-3 mb-2">
+              <div class="w-9 h-9 rounded-lg bg-amber-600/20 border border-amber-500/30 flex items-center justify-center">
+                <i class="fa-solid fa-film text-amber-400 text-sm" />
+              </div>
+              <span class="text-amber-400 font-['Barlow_Condensed'] uppercase tracking-[0.2em] text-xs font-semibold">
+                Cine Atemporal
+              </span>
+            </div>
+            <h2
+              id="heading-clasicos"
+              class="font-['Bebas_Neue'] text-4xl sm:text-5xl text-white tracking-wide"
+            >
+              Clásicos <span class="text-amber-400">Imprescindibles</span>
+            </h2>
+          </div>
+          <a
+            href="/peliculas?cat=clasico"
+            class="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-amber-400 transition-colors group shrink-0"
+          >
+            Ver todo
+            <i class="fa-solid fa-arrow-right transition-transform group-hover:translate-x-1" />
+          </a>
+        </header>
+
+        <!-- Separador decorativo -->
+        <div class="flex items-center gap-4 mb-10">
+          <div class="h-[1px] flex-1 bg-gradient-to-r from-amber-600/40 to-transparent" />
+          <i class="fa-solid fa-star text-amber-500/40 text-xs" />
+          <div class="h-[1px] w-16 bg-slate-800" />
+        </div>
+
+        <!-- Grid de clásicos -->
+        {clasicas.length > 0 ? (
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {clasicas.map((pelicula, i) => (
+              <div
+                class="animate-on-scroll"
+                style={`animation-delay: ${i * 0.12}s`}
+              >
+                <!--
+                  Envolvemos MovieCard en un div con clase `clasico-card`
+                  para sobreescribir el color de hover del título y del CTA
+                  via CSS descendiente → ver <style> abajo.
+                -->
+                <div class="clasico-card">
+                  <MovieCard
+                    title={pelicula.title}
+                    description={pelicula.description}
+                    image={pelicula.image}
+                    trailer={pelicula.trailer}
+                    anio={pelicula.anio}
+                    director={pelicula.director}
+                    duracion={pelicula.duracion}
+                    calificacion={pelicula.calificacion}
+                    genero={pelicula.genero}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p class="text-slate-500 text-center py-12">No hay clásicos disponibles por el momento.</p>
+        )}
+      </div>
+    </section>
+
+    <!-- Divisor -->
+    <div class="h-px bg-gradient-to-r from-transparent via-slate-700/50 to-transparent mx-12" aria-hidden="true" />
+
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <!--  SECCIÓN: PRÓXIMAMENTE                                    -->
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <section
+      id="proximamente"
+      class="py-20 bg-[#0a0f1a] scroll-mt-32"
+      aria-labelledby="heading-proximas"
+    >
+      <div class="max-w-7xl mx-auto px-6 lg:px-12">
+
+        <!-- Encabezado -->
+        <header class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10 animate-on-scroll">
+          <div>
+            <div class="flex items-center gap-3 mb-2">
+              <div class="w-9 h-9 rounded-lg bg-cyan-600/20 border border-cyan-500/30 flex items-center justify-center">
+                <i class="fa-solid fa-calendar-days text-cyan-400 text-sm" />
+              </div>
+              <span class="text-cyan-400 font-['Barlow_Condensed'] uppercase tracking-[0.2em] text-xs font-semibold">
+                Muy pronto en cines
+              </span>
+            </div>
+            <h2
+              id="heading-proximas"
+              class="font-['Bebas_Neue'] text-4xl sm:text-5xl text-white tracking-wide"
+            >
+              Próxi<span class="text-cyan-400">mamente</span>
+            </h2>
+          </div>
+          <a
+            href="/peliculas?cat=proximo"
+            class="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-cyan-400 transition-colors group shrink-0"
+          >
+            Ver todo
+            <i class="fa-solid fa-arrow-right transition-transform group-hover:translate-x-1" />
+          </a>
+        </header>
+
+        <!-- Separador decorativo -->
+        <div class="flex items-center gap-4 mb-10">
+          <div class="h-[1px] flex-1 bg-gradient-to-r from-cyan-600/40 to-transparent" />
+          <i class="fa-solid fa-star text-cyan-500/40 text-xs" />
+          <div class="h-[1px] w-16 bg-slate-800" />
+        </div>
+
+        <!-- Grid de próximas + banner de aviso -->
+        <div class="mb-6 flex items-center gap-3 p-4 rounded-xl bg-cyan-950/30 border border-cyan-800/30 animate-on-scroll">
+          <i class="fa-solid fa-circle-info text-cyan-400 text-sm shrink-0" />
+          <p class="text-slate-400 text-sm">
+            Las fechas de estreno y detalles de estas películas pueden cambiar.
+            <a href="/noticias" class="text-cyan-400 hover:underline ml-1">Mantente al día en nuestras noticias →</a>
+          </p>
+        </div>
+
+        {proximas.length > 0 ? (
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {proximas.map((pelicula, i) => (
+              <div
+                class="animate-on-scroll proximo-card"
+                style={`animation-delay: ${i * 0.12}s`}
+              >
+                <MovieCard
+                  title={pelicula.title}
+                  description={pelicula.description}
+                  image={pelicula.image}
+                  trailer={pelicula.trailer}
+                  anio={pelicula.anio}
+                  director={pelicula.director}
+                  duracion={pelicula.duracion}
+                  calificacion={pelicula.calificacion}
+                  genero={pelicula.genero}
+                  showCategoria={true}
+                  categoria="proximo"
+                />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p class="text-slate-500 text-center py-12">No hay estrenos próximos cargados aún.</p>
+        )}
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <!--  CTA FINAL                                                 -->
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <section class="py-16 bg-[#060b14] border-t border-slate-800/60">
+      <div class="max-w-3xl mx-auto px-6 text-center animate-on-scroll">
+        <p class="text-slate-400 text-sm uppercase tracking-widest font-['Barlow_Condensed'] mb-3">
+          ¿Quieres más?
+        </p>
+        <h2 class="font-['Bebas_Neue'] text-4xl sm:text-5xl text-white mb-4">
+          ¿Buscas una reseña <span class="text-blue-400">en profundidad?</span>
+        </h2>
+        <p class="text-slate-400 mb-8 max-w-lg mx-auto">
+          Nuestro equipo analiza cada película en detalle: guion, fotografía, actuaciones y banda sonora.
+        </p>
+        <div class="flex flex-wrap items-center justify-center gap-4">
+          <a
+            href="/resenas"
+            class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-blue-900/30 hover:-translate-y-0.5"
+          >
+            <i class="fa-solid fa-star-half-stroke" />
+            Leer Reseñas
+          </a>
+          <a
+            href="/noticias"
+            class="inline-flex items-center gap-2 px-6 py-3 border border-slate-600/60 hover:border-blue-500/60 text-slate-300 hover:text-blue-400 font-semibold rounded-xl transition-all duration-200 hover:bg-blue-600/10"
+          >
+            <i class="fa-solid fa-newspaper" />
+            Últimas Noticias
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <Footer />
+</Layout>
+
+<!--
+  Overrides de color por categoría para las tarjetas de clásicos/próximas.
+  Usamos selectores CSS descendientes desde el wrapper (.clasico-card, .proximo-card)
+  porque los estilos internos de MovieCard son locales a ese componente.
+
+  En producción, una solución más elegante sería pasar una prop `accentColor`
+  al componente y usar variantes de color dinámicas.
+-->
+<style>
+  /* ── Tarjetas de Clásicos: acento ámbar ───────────────── */
+  .clasico-card article {
+    --tw-shadow-color: rgba(217, 119, 6, 0.15);
+  }
+  .clasico-card article:hover {
+    border-color: rgba(245, 158, 11, 0.35) !important;
+    box-shadow: 0 20px 60px rgba(217, 119, 6, 0.2);
+  }
+  .clasico-card h3 {
+    transition: color 0.3s;
+  }
+  .clasico-card article:hover h3 {
+    color: #fbbf24 !important; /* amber-400 */
+  }
+
+  /* ── Tarjetas de Próximas: acento cyan ────────────────── */
+  .proximo-card article:hover {
+    border-color: rgba(6, 182, 212, 0.35) !important;
+    box-shadow: 0 20px 60px rgba(6, 182, 212, 0.15);
+  }
+  .proximo-card article:hover h3 {
+    color: #22d3ee !important; /* cyan-400 */
+  }
+</style>
