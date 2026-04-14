@@ -1,10 +1,10 @@
 [
   {
     "id": 1,
-    "nombre": "Alejandro Reyes",
-    "rol": "Editor en Jefe",
-    "bio": "Cinéfilo apasionado con más de 10 años cubriendo la industria del cine. Especialista en cine de autor y festivales internacionales.",
-    "avatar": "https://i.pravatar.cc/300?img=11",
+    "nombre": "Hector",
+    "rol": "Desarrollador Frontend y Diseñador UX/UI Principal",
+    "bio": "Encargado de diseñar la interfaz y la experiencia de usuario. Su objetivo es garantizar que Cine-Hub sea una plataforma intuitiva, visualmente atractiva y fácil de navegar en cualquier dispositivo.",
+    "avatar": "/team/hector-profile.webp",
     "redes": {
       "twitter": "#",
       "instagram": "#",
@@ -13,10 +13,10 @@
   },
   {
     "id": 2,
-    "nombre": "Sofía Mendoza",
-    "rol": "Crítica de Cine",
-    "bio": "Licenciada en Comunicación Audiovisual. Sus reseñas destacan por su profundidad analítica y sensibilidad hacia el cine latinoamericano e independiente.",
-    "avatar": "https://i.pravatar.cc/300?img=5",
+    "nombre": "Danae",
+    "rol": "Ingeniero Frontend y Control de Calidad",
+    "bio": "Desarrolla los componentes visuales de la web y realiza pruebas rigurosas. Asegura que el código del lado del cliente sea limpio y que no existan errores visuales ni funcionales.",
+    "avatar": "/team/danae-profile.webp",
     "redes": {
       "twitter": "#",
       "instagram": "#",
@@ -25,10 +25,10 @@
   },
   {
     "id": 3,
-    "nombre": "Carlos Vega",
-    "rol": "Redactor de Noticias",
-    "bio": "Periodista especializado en entretenimiento. Siempre al día con los últimos estrenos, tráilers y noticias de la industria hollywoodense.",
-    "avatar": "https://i.pravatar.cc/300?img=15",
+    "nombre": "Ariel",
+    "rol": "Arquitectura Backend y Desarrolladora de API",
+    "bio": "Diseña la estructura interna del sistema. Es responsable de crear las APIs y la lógica profunda que permite a Cine-Hub gestionar, procesar y servir datos de manera eficiente y escalable.",
+    "avatar": "/team/ariel-profile.webp",
     "redes": {
       "twitter": "#",
       "instagram": "#",
@@ -37,10 +37,10 @@
   },
   {
     "id": 4,
-    "nombre": "Valentina Cruz",
-    "rol": "Especialista en Series",
-    "bio": "Experta en televisión de calidad y narrativas seriales. Analiza las tendencias del streaming y la evolución de la TV de autor a nivel global.",
-    "avatar": "https://i.pravatar.cc/300?img=9",
+    "nombre": "Esteban",
+    "rol": "Desarrollador Backend",
+    "bio": "Implementa la lógica del servidor y la gestión de datos. Trabaja para asegurar que el rendimiento de la plataforma sea óptimo, seguro y capaz de soportar el tráfico de los usuarios.",
+    "avatar": "/team/esteban-profile.webp",
     "redes": {
       "twitter": "#",
       "instagram": "#",
@@ -49,10 +49,10 @@
   },
   {
     "id": 5,
-    "nombre": "Diego Torres",
-    "rol": "Fotógrafo & Diseñador",
-    "bio": "Responsable de la identidad visual de Cine-Hub. Diseñador gráfico y fotógrafo de red carpet con ojo para la estética cinematográfica.",
-    "avatar": "https://i.pravatar.cc/300?img=13",
+    "nombre": "Marco",
+    "rol": "Soporte de Proyecto y Gestión de Comunidad",
+    "bio": "Brinda apoyo transversal al equipo de desarrollo y actúa como puente de comunicación. Se asegura de que la interacción con los usuarios fluya para seguir mejorando la plataforma.",
+    "avatar": "/team/marco-profile.webp",
     "redes": {
       "twitter": "#",
       "instagram": "#",
@@ -61,10 +61,10 @@
   },
   {
     "id": 6,
-    "nombre": "Natalia Flores",
-    "rol": "Community Manager",
-    "bio": "Gestiona la comunidad Cine-Hub con pasión. Conecta con los lectores y mantiene viva la conversación sobre las películas que todos amamos.",
-    "avatar": "https://i.pravatar.cc/300?img=20",
+    "nombre": "Fernando",
+    "rol": "Gerente de Producto y Líder de Control de Calidad",
+    "bio": "Lidera la visión estratégica del proyecto. Coordina los esfuerzos del equipo técnico y supervisa que el producto final cumpla con los más altos estándares antes de cada actualización.",
+    "avatar": "/team/fernando-profile.webp",
     "redes": {
       "twitter": "#",
       "instagram": "#",

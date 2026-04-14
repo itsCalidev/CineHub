@@ -224,7 +224,7 @@ const starsFromRating = (r: number) => Math.round(r / 2); // TMDB 10 → 5 estre
               <div class="flex items-center gap-2">
                 <i class="fa-solid fa-film text-white text-xl"></i>
                 <div>
-                  <p class="text-white font-['Bebas_Neue'] text-xl leading-none">+1,200</p>
+                  <p class="text-white font-['Bebas_Neue'] text-xl leading-none">10+</p>
                   <p class="text-blue-200 text-xs">Reseñas publicadas</p>
                 </div>
               </div>
@@ -259,9 +259,9 @@ const starsFromRating = (r: number) => Math.round(r / 2); // TMDB 10 → 5 estre
             <!-- Stats -->
             <div class="grid grid-cols-3 gap-6 mb-8 py-6 border-t border-b border-slate-800/60">
               {[
-                { value: "1,200+", label: "Reseñas" },
-                { value: "800+", label: "Películas" },
-                { value: "50K+", label: "Lectores" },
+                { value: "10+", label: "Reseñas" },
+                { value: "15+", label: "Películas" },
+                { value: "10K+", label: "Lectores" },
               ].map(({ value, label }) => (
                 <div class="text-center">
                   <p class="font-['Bebas_Neue'] text-3xl text-blue-400">{value}</p>
@@ -312,11 +312,11 @@ const starsFromRating = (r: number) => Math.round(r / 2); // TMDB 10 → 5 estre
               icon: "fa-solid fa-film",
               titulo: "Películas",
               descripcion:
-                "Explora nuestra base de datos curada con más de 800 películas organizadas por género, año, director y país. Filters avanzados para encontrar exactamente lo que buscas.",
+                "Explora nuestra base de datos curada con más de 15 películas organizadas por género, año, director y país. Filters avanzados para encontrar exactamente lo que buscas.",
               href: "/peliculas",
               color: "from-blue-600/20 to-blue-800/10",
               border: "hover:border-blue-500/50",
-              badge: "800+ títulos",
+              badge: "15+ títulos",
             },
             {
               icon: "fa-solid fa-star-half-stroke",
@@ -326,7 +326,7 @@ const starsFromRating = (r: number) => Math.round(r / 2); // TMDB 10 → 5 estre
               href: "/resenas",
               color: "from-cyan-600/20 to-cyan-800/10",
               border: "hover:border-cyan-500/50",
-              badge: "1,200+ reseñas",
+              badge: "10+ reseñas",
             },
             {
               icon: "fa-solid fa-newspaper",
@@ -390,7 +390,7 @@ const starsFromRating = (r: number) => Math.round(r / 2); // TMDB 10 → 5 estre
             Nuestro <span class="text-blue-400">Equipo</span>
           </h2>
           <p class="mt-4 text-slate-400 max-w-xl mx-auto">
-            Cinéfilos apasionados con una misión: compartir el amor por el cine con el mundo.
+            Desarrolladores apasionados con una misión: compartir el amor por el cine con el mundo.
           </p>
         </div>
 
@@ -491,12 +491,12 @@ const starsFromRating = (r: number) => Math.round(r / 2); // TMDB 10 → 5 estre
                 {
                   icon: "fa-solid fa-envelope",
                   titulo: "Correo electrónico",
-                  valor: "hola@cine-hub.com",
+                  valor: "equipocinehub@gmail.com",
                 },
                 {
-                  icon: "fa-brands fa-twitter",
-                  titulo: "Twitter / X",
-                  valor: "@CineHubOficial",
+                  icon: "fa-brands fa-instagram",
+                  titulo: "Instagram",
+                  valor: "@equipocinehub",
                 },
                 {
                   icon: "fa-solid fa-clock",
@@ -518,12 +518,6 @@ const starsFromRating = (r: number) => Math.round(r / 2); // TMDB 10 → 5 estre
           </div>
 
           <!-- Formulario derecha -->
-          <!-- 
-            Nota: Astro genera HTML estático. Para formularios funcionales en Vercel puedes usar:
-            - Vercel Functions (api/contact.ts)
-            - Formspree.io (reemplaza action="#" con tu endpoint)
-            - Web3Forms
-          -->
           <div class="animate-on-scroll">
             <form
               id="contact-form"
@@ -609,7 +603,7 @@ const starsFromRating = (r: number) => Math.round(r / 2); // TMDB 10 → 5 estre
                 Enviar mensaje
               </button>
 
-              <!-- Mensaje de éxito (oculto inicialmente) -->
+              <!-- Mensaje de éxito -->
               <div
                 id="success-msg"
                 class="hidden flex items-center gap-3 p-4 rounded-lg bg-green-900/30 border border-green-500/30 text-green-400 text-sm"
@@ -660,7 +654,7 @@ const starsFromRating = (r: number) => Math.round(r / 2); // TMDB 10 → 5 estre
     clearInterval(autoplayTimer);
   }
 
-  // Botones de control
+  // Botones
   document.getElementById("carousel-prev")?.addEventListener("click", () => {
     stopAutoplay();
     goTo(current - 1);
@@ -673,7 +667,7 @@ const starsFromRating = (r: number) => Math.round(r / 2); // TMDB 10 → 5 estre
     startAutoplay();
   });
 
-  // Puntos indicadores
+  // Indicadores
   dots.forEach((dot, i) => {
     dot.addEventListener("click", () => {
       stopAutoplay();
@@ -706,7 +700,7 @@ const starsFromRating = (r: number) => Math.round(r / 2); // TMDB 10 → 5 estre
 </script>
 
 <!-- ══════════════════════════════════════════════════════════════════ -->
-<!--  SCRIPT DEL FORMULARIO (demo: muestra mensaje de éxito)           -->
+<!--  SCRIPT DEL FORMULARIO          -->
 <!-- ══════════════════════════════════════════════════════════════════ -->
 <script>
   const form = document.getElementById("contact-form") as HTMLFormElement | null;
@@ -716,8 +710,7 @@ const starsFromRating = (r: number) => Math.round(r / 2); // TMDB 10 → 5 estre
   form?.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    // Aquí iría tu lógica de envío real (Formspree, Vercel Function, etc.)
-    // Por ahora simulamos la respuesta:
+    // Simulación de envío
     if (submitBtn) {
       submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Enviando…';
       submitBtn.setAttribute("disabled", "true");
