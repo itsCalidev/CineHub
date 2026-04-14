@@ -1,0 +1,74 @@
+[
+  {
+    "id": 1,
+    "nombre": "Alejandro Reyes",
+    "rol": "Editor en Jefe",
+    "bio": "Cinéfilo apasionado con más de 10 años cubriendo la industria del cine. Especialista en cine de autor y festivales internacionales.",
+    "avatar": "https://i.pravatar.cc/300?img=11",
+    "redes": {
+      "twitter": "#",
+      "instagram": "#",
+      "letterboxd": "#"
+    }
+  },
+  {
+    "id": 2,
+    "nombre": "Sofía Mendoza",
+    "rol": "Crítica de Cine",
+    "bio": "Licenciada en Comunicación Audiovisual. Sus reseñas destacan por su profundidad analítica y sensibilidad hacia el cine latinoamericano e independiente.",
+    "avatar": "https://i.pravatar.cc/300?img=5",
+    "redes": {
+      "twitter": "#",
+      "instagram": "#",
+      "letterboxd": "#"
+    }
+  },
+  {
+    "id": 3,
+    "nombre": "Carlos Vega",
+    "rol": "Redactor de Noticias",
+    "bio": "Periodista especializado en entretenimiento. Siempre al día con los últimos estrenos, tráilers y noticias de la industria hollywoodense.",
+    "avatar": "https://i.pravatar.cc/300?img=15",
+    "redes": {
+      "twitter": "#",
+      "instagram": "#",
+      "letterboxd": "#"
+    }
+  },
+  {
+    "id": 4,
+    "nombre": "Valentina Cruz",
+    "rol": "Especialista en Series",
+    "bio": "Experta en televisión de calidad y narrativas seriales. Analiza las tendencias del streaming y la evolución de la TV de autor a nivel global.",
+    "avatar": "https://i.pravatar.cc/300?img=9",
+    "redes": {
+      "twitter": "#",
+      "instagram": "#",
+      "letterboxd": "#"
+    }
+  },
+  {
+    "id": 5,
+    "nombre": "Diego Torres",
+    "rol": "Fotógrafo & Diseñador",
+    "bio": "Responsable de la identidad visual de Cine-Hub. Diseñador gráfico y fotógrafo de red carpet con ojo para la estética cinematográfica.",
+    "avatar": "https://i.pravatar.cc/300?img=13",
+    "redes": {
+      "twitter": "#",
+      "instagram": "#",
+      "letterboxd": "#"
+    }
+  },
+  {
+    "id": 6,
+    "nombre": "Natalia Flores",
+    "rol": "Community Manager",
+    "bio": "Gestiona la comunidad Cine-Hub con pasión. Conecta con los lectores y mantiene viva la conversación sobre las películas que todos amamos.",
+    "avatar": "https://i.pravatar.cc/300?img=20",
+    "redes": {
+      "twitter": "#",
+      "instagram": "#",
+      "letterboxd": "#"
+    }
+  }
+]

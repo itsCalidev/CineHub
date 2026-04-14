@@ -1,17 +1,736 @@
 ---
+// src/pages/index.astro
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
 
+// ── Importar datos estáticos ──────────────────────────────────────────────────
+import carruselData from "../data/carrusel.json";
+import equipoData from "../data/equipo.json";
+
+// Tipado básico
+interface PeliCarrusel {
+  id: number;
+  titulo: string;
+  genero: string;
+  anio: number;
+  director: string;
+  descripcion: string;
+  imagen: string;
+  calificacion: number;
+  slug: string;
+}
+
+interface Miembro {
+  id: number;
+  nombre: string;
+  rol: string;
+  bio: string;
+  avatar: string;
+  redes: { twitter: string; instagram: string; letterboxd: string };
+}
+
+const peliculas: PeliCarrusel[] = carruselData;
+const equipo: Miembro[] = equipoData;
+
+// Helpers
+const starsFromRating = (r: number) => Math.round(r / 2); // TMDB 10 → 5 estrellas
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout
+  title="Inicio"
+  description="Cine-Hub: Tu portal de reseñas, noticias y recomendaciones de cine. Explora estrenos, críticas y mucho más."
+>
+  <Header />
+
+  <main class="pt-[68px]">
+
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <!--  SECCIÓN 1 · CARRUSEL HERO                                  -->
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <section
+      id="hero"
+      class="relative w-full overflow-hidden"
+      aria-label="Películas destacadas"
+    >
+      <!-- Slides -->
+      <div
+        id="carousel-track"
+        class="flex transition-transform duration-700 ease-in-out"
+        style="will-change: transform;"
+      >
+        {
+          peliculas.map((peli, i) => (
+            <article
+              class="relative min-w-full h-[92vh] min-h-[560px] flex-shrink-0"
+              data-index={i}
+            >
+              <!-- Imagen de fondo -->
+              <img
+                src={peli.imagen}
+                alt={peli.titulo}
+                loading={i === 0 ? "eager" : "lazy"}
+                class="absolute inset-0 w-full h-full object-cover object-center"
+              />
+
+              <!-- Gradientes -->
+              <div class="absolute inset-0 bg-gradient-to-r from-[#0a0f1a] via-[#0a0f1a]/70 to-transparent" />
+              <div class="absolute inset-0 bg-gradient-to-t from-[#0a0f1a] via-transparent to-transparent" />
+
+              <!-- Contenido -->
+              <div class="absolute inset-0 flex items-center">
+                <div class="w-full max-w-7xl mx-auto px-6 lg:px-12">
+                  <div class="max-w-lg">
+                    <!-- Género badge -->
+                    <div class="flex flex-wrap gap-2 mb-4">
+                      {peli.genero.split(" · ").map((g) => (
+                        <span class="px-3 py-1 rounded-full bg-blue-600/20 border border-blue-500/30 text-blue-400 text-xs font-semibold uppercase tracking-wider">
+                          {g}
+                        </span>
+                      ))}
+                    </div>
+
+                    <!-- Título -->
+                    <h1 class="font-['Bebas_Neue'] text-5xl sm:text-6xl lg:text-7xl text-white leading-none tracking-wide mb-3">
+                      {peli.titulo}
+                    </h1>
+
+                    <!-- Meta info -->
+                    <div class="flex items-center gap-4 text-sm text-slate-300 mb-4">
+                      <span class="flex items-center gap-1">
+                        <i class="fa-solid fa-calendar-days text-blue-400 text-xs" />
+                        {peli.anio}
+                      </span>
+                      <span class="w-[1px] h-4 bg-slate-600" />
+                      <span class="flex items-center gap-1">
+                        <i class="fa-solid fa-clapperboard text-blue-400 text-xs" />
+                        {peli.director}
+                      </span>
+                      <span class="w-[1px] h-4 bg-slate-600" />
+                      <span class="flex items-center gap-1">
+                        <i class="fa-solid fa-star text-yellow-400 text-xs" />
+                        {peli.calificacion}
+                      </span>
+                    </div>
+
+                    <!-- Estrellas visuales -->
+                    <div class="flex gap-1 mb-5" aria-label={`Calificación: ${peli.calificacion} de 10`}>
+                      {Array.from({ length: 5 }, (_, k) => (
+                        <i
+                          class:list={[
+                            "fa-star text-sm",
+                            k < starsFromRating(peli.calificacion)
+                              ? "fa-solid text-yellow-400"
+                              : "fa-regular text-slate-600",
+                          ]}
+                        />
+                      ))}
+                    </div>
+
+                    <!-- Descripción -->
+                    <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-8 line-clamp-3">
+                      {peli.descripcion}
+                    </p>
+
+                    <!-- CTAs -->
+                    <div class="flex flex-wrap gap-3">
+                      <a
+                        href={`/peliculas/${peli.slug}`}
+                        class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-lg transition-all duration-200 shadow-lg shadow-blue-900/40 hover:shadow-blue-700/50 hover:-translate-y-0.5"
+                      >
+                        <i class="fa-solid fa-circle-info" />
+                        Más información
+                      </a>
+                      <a
+                        href={`/resenas/${peli.slug}`}
+                        class="inline-flex items-center gap-2 px-6 py-3 border border-slate-500/60 hover:border-blue-500/60 text-slate-200 hover:text-blue-400 font-semibold rounded-lg transition-all duration-200 hover:bg-blue-600/10"
+                      >
+                        <i class="fa-regular fa-star" />
+                        Ver reseña
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+
+      <!-- Controles: Flechas -->
+      <button
+        id="carousel-prev"
+        aria-label="Película anterior"
+        class="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-black/40 hover:bg-blue-600/80 border border-white/10 hover:border-blue-500/50 text-white flex items-center justify-center transition-all duration-200 backdrop-blur-sm"
+      >
+        <i class="fa-solid fa-chevron-left"></i>
+      </button>
+      <button
+        id="carousel-next"
+        aria-label="Siguiente película"
+        class="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-black/40 hover:bg-blue-600/80 border border-white/10 hover:border-blue-500/50 text-white flex items-center justify-center transition-all duration-200 backdrop-blur-sm"
+      >
+        <i class="fa-solid fa-chevron-right"></i>
+      </button>
+
+      <!-- Indicadores de puntos -->
+      <div
+        id="carousel-dots"
+        class="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex gap-2"
+        aria-label="Indicadores del carrusel"
+      >
+        {
+          peliculas.map((_, i) => (
+            <button
+              data-dot={i}
+              aria-label={`Ir a la película ${i + 1}`}
+              class:list={[
+                "carousel-dot transition-all duration-300 rounded-full",
+                i === 0
+                  ? "w-8 h-2 bg-blue-500"
+                  : "w-2 h-2 bg-white/30 hover:bg-white/60",
+              ]}
+            />
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <!--  SECCIÓN 2 · ACERCA DE                                      -->
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <section id="acerca" class="py-24 bg-[#0a0f1a]">
+      <div class="max-w-7xl mx-auto px-6 lg:px-12">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+
+          <!-- Imagen izquierda -->
+          <div class="animate-on-scroll relative">
+            <div class="relative rounded-2xl overflow-hidden">
+              <!-- Marco decorativo -->
+              <div class="absolute -inset-1 bg-gradient-to-br from-blue-600/30 via-transparent to-cyan-600/20 rounded-2xl blur-xl" />
+              <div class="relative rounded-2xl overflow-hidden border border-slate-700/50">
+                <img
+                  src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=800&q=80"
+                  alt="Sala de cine con asientos iluminados"
+                  class="w-full h-[420px] object-cover"
+                  loading="lazy"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-[#0a0f1a]/60 to-transparent" />
+              </div>
+            </div>
+
+            <!-- Badge flotante -->
+            <div class="absolute -bottom-5 -right-4 bg-blue-600 rounded-xl px-5 py-3 shadow-xl shadow-blue-900/40">
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-film text-white text-xl"></i>
+                <div>
+                  <p class="text-white font-['Bebas_Neue'] text-xl leading-none">+1,200</p>
+                  <p class="text-blue-200 text-xs">Reseñas publicadas</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Texto derecha -->
+          <div class="animate-on-scroll">
+            <!-- Etiqueta de sección -->
+            <div class="flex items-center gap-3 mb-4">
+              <span class="w-8 h-[2px] bg-blue-500 rounded" />
+              <span class="text-blue-400 font-['Barlow_Condensed'] uppercase tracking-widest text-sm font-semibold">
+                Nuestra historia
+              </span>
+            </div>
+
+            <h2 class="font-['Bebas_Neue'] text-5xl lg:text-6xl text-white leading-tight mb-6">
+              Bienvenidos a
+              <span class="block text-blue-400">Cine-Hub</span>
+            </h2>
+
+            <p class="text-slate-300 leading-relaxed mb-5">
+              Somos un portal independiente nacido de la pasión por el séptimo arte. Nuestro equipo de críticos y entusiastas
+              del cine trabaja cada día para traerte las reseñas más honestas, las noticias más relevantes y las
+              recomendaciones más acertadas.
+            </p>
+            <p class="text-slate-400 leading-relaxed mb-8">
+              Desde los grandes blockbusters de Hollywood hasta las joyas del cine independiente y latinoamericano,
+              en Cine-Hub encontrarás análisis profundos, listas curadas y una comunidad que comparte tu amor por el cine.
+            </p>
+
+            <!-- Stats -->
+            <div class="grid grid-cols-3 gap-6 mb-8 py-6 border-t border-b border-slate-800/60">
+              {[
+                { value: "1,200+", label: "Reseñas" },
+                { value: "800+", label: "Películas" },
+                { value: "50K+", label: "Lectores" },
+              ].map(({ value, label }) => (
+                <div class="text-center">
+                  <p class="font-['Bebas_Neue'] text-3xl text-blue-400">{value}</p>
+                  <p class="text-slate-500 text-xs uppercase tracking-wider mt-1">{label}</p>
+                </div>
+              ))}
+            </div>
+
+            <a
+              href="/acerca"
+              class="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 font-semibold transition-colors group"
+            >
+              Conoce a nuestro equipo
+              <i class="fa-solid fa-arrow-right transition-transform group-hover:translate-x-1"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <!--  SECCIÓN 3 · NUESTROS SERVICIOS                             -->
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <section id="servicios" class="py-24 bg-[#060b14]">
+      <div class="max-w-7xl mx-auto px-6 lg:px-12">
+
+        <!-- Encabezado -->
+        <div class="text-center mb-16 animate-on-scroll">
+          <div class="flex items-center justify-center gap-3 mb-4">
+            <span class="w-8 h-[2px] bg-blue-500 rounded" />
+            <span class="text-blue-400 font-['Barlow_Condensed'] uppercase tracking-widest text-sm font-semibold">
+              Lo que hacemos
+            </span>
+            <span class="w-8 h-[2px] bg-blue-500 rounded" />
+          </div>
+          <h2 class="font-['Bebas_Neue'] text-5xl lg:text-6xl text-white">
+            Nuestros <span class="text-blue-400">Servicios</span>
+          </h2>
+          <p class="mt-4 text-slate-400 max-w-xl mx-auto">
+            Todo lo que necesitas para estar al día con el mundo del cine en un solo lugar.
+          </p>
+        </div>
+
+        <!-- Cards de servicios -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {[
+            {
+              icon: "fa-solid fa-film",
+              titulo: "Películas",
+              descripcion:
+                "Explora nuestra base de datos curada con más de 800 películas organizadas por género, año, director y país. Filters avanzados para encontrar exactamente lo que buscas.",
+              href: "/peliculas",
+              color: "from-blue-600/20 to-blue-800/10",
+              border: "hover:border-blue-500/50",
+              badge: "800+ títulos",
+            },
+            {
+              icon: "fa-solid fa-star-half-stroke",
+              titulo: "Reseñas",
+              descripcion:
+                "Análisis críticos profundos escritos por nuestro equipo de expertos. Sin spoilers obligatorios, con perspectivas múltiples y calificaciones detalladas por categoría.",
+              href: "/resenas",
+              color: "from-cyan-600/20 to-cyan-800/10",
+              border: "hover:border-cyan-500/50",
+              badge: "1,200+ reseñas",
+            },
+            {
+              icon: "fa-solid fa-newspaper",
+              titulo: "Noticias",
+              descripcion:
+                "Las últimas noticias del mundo del cine: estrenos, tráilers, casting, festivales, premios y todo lo que ocurre en la industria cinematográfica global.",
+              href: "/noticias",
+              color: "from-indigo-600/20 to-indigo-800/10",
+              border: "hover:border-indigo-500/50",
+              badge: "Actualización diaria",
+            },
+          ].map(({ icon, titulo, descripcion, href, color, border, badge }, i) => (
+            <article
+              class={`animate-on-scroll group relative rounded-2xl bg-gradient-to-br ${color} border border-slate-700/40 ${border} p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-black/40 cursor-pointer`}
+              style={`animation-delay: ${i * 0.15}s`}
+            >
+              <!-- Icono -->
+              <div class="w-14 h-14 rounded-xl bg-blue-600/20 border border-blue-500/20 flex items-center justify-center mb-6 group-hover:bg-blue-600/30 transition-colors">
+                <i class={`${icon} text-blue-400 text-xl`} />
+              </div>
+
+              <!-- Badge -->
+              <span class="absolute top-6 right-6 px-3 py-1 bg-slate-800/80 rounded-full text-slate-400 text-xs font-medium border border-slate-700/50">
+                {badge}
+              </span>
+
+              <h3 class="font-['Bebas_Neue'] text-3xl text-white mb-3 tracking-wide group-hover:text-blue-300 transition-colors">
+                {titulo}
+              </h3>
+              <p class="text-slate-400 text-sm leading-relaxed mb-6">{descripcion}</p>
+
+              <a
+                href={href}
+                class="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 text-sm font-semibold transition-colors group/link"
+              >
+                Explorar
+                <i class="fa-solid fa-arrow-right transition-transform group-hover/link:translate-x-1" />
+              </a>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <!--  SECCIÓN 4 · EQUIPO                                         -->
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <section id="equipo" class="py-24 bg-[#0a0f1a]">
+      <div class="max-w-7xl mx-auto px-6 lg:px-12">
+
+        <!-- Encabezado -->
+        <div class="text-center mb-16 animate-on-scroll">
+          <div class="flex items-center justify-center gap-3 mb-4">
+            <span class="w-8 h-[2px] bg-blue-500 rounded" />
+            <span class="text-blue-400 font-['Barlow_Condensed'] uppercase tracking-widest text-sm font-semibold">
+              Las personas detrás
+            </span>
+            <span class="w-8 h-[2px] bg-blue-500 rounded" />
+          </div>
+          <h2 class="font-['Bebas_Neue'] text-5xl lg:text-6xl text-white">
+            Nuestro <span class="text-blue-400">Equipo</span>
+          </h2>
+          <p class="mt-4 text-slate-400 max-w-xl mx-auto">
+            Cinéfilos apasionados con una misión: compartir el amor por el cine con el mundo.
+          </p>
+        </div>
+
+        <!-- Grid de tarjetas de equipo -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {
+            equipo.map((miembro, i) => (
+              <article
+                class="animate-on-scroll group text-center"
+                style={`animation-delay: ${i * 0.1}s`}
+              >
+                <div class="relative inline-block mb-5">
+                  <!-- Anillo decorativo -->
+                  <div class="absolute inset-0 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 scale-[1.07] opacity-0 group-hover:opacity-100 transition-all duration-400 blur-sm" />
+                  <div class="absolute inset-0 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 scale-[1.07] opacity-30 group-hover:opacity-70 transition-opacity duration-400" />
+
+                  <!-- Avatar circular -->
+                  <img
+                    src={miembro.avatar}
+                    alt={miembro.nombre}
+                    loading="lazy"
+                    class="relative w-28 h-28 rounded-full object-cover border-4 border-[#0a0f1a] group-hover:border-blue-600/50 transition-all duration-300 group-hover:scale-105"
+                  />
+
+                  <!-- Ícono de rol flotante -->
+                  <div class="absolute -bottom-2 -right-2 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center border-2 border-[#0a0f1a] shadow-lg">
+                    <i class="fa-solid fa-pen-nib text-white text-xs" />
+                  </div>
+                </div>
+
+                <h3 class="font-['Bebas_Neue'] text-2xl text-white tracking-wide group-hover:text-blue-300 transition-colors">
+                  {miembro.nombre}
+                </h3>
+                <p class="text-blue-400 text-xs font-['Barlow_Condensed'] uppercase tracking-widest font-semibold mb-3">
+                  {miembro.rol}
+                </p>
+                <p class="text-slate-400 text-sm leading-relaxed px-2 mb-5 line-clamp-2">
+                  {miembro.bio}
+                </p>
+
+                <!-- Social links -->
+                <div class="flex items-center justify-center gap-2">
+                  <a
+                    href={miembro.redes.twitter}
+                    aria-label={`Twitter de ${miembro.nombre}`}
+                    class="w-8 h-8 rounded-lg bg-slate-800/60 hover:bg-blue-600 flex items-center justify-center text-slate-400 hover:text-white transition-all duration-200 text-xs"
+                  >
+                    <i class="fa-brands fa-twitter" />
+                  </a>
+                  <a
+                    href={miembro.redes.instagram}
+                    aria-label={`Instagram de ${miembro.nombre}`}
+                    class="w-8 h-8 rounded-lg bg-slate-800/60 hover:bg-blue-600 flex items-center justify-center text-slate-400 hover:text-white transition-all duration-200 text-xs"
+                  >
+                    <i class="fa-brands fa-instagram" />
+                  </a>
+                  <a
+                    href={miembro.redes.letterboxd}
+                    aria-label={`Letterboxd de ${miembro.nombre}`}
+                    class="w-8 h-8 rounded-lg bg-slate-800/60 hover:bg-blue-600 flex items-center justify-center text-slate-400 hover:text-white transition-all duration-200 text-xs"
+                  >
+                    <i class="fa-solid fa-film" />
+                  </a>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <!--  SECCIÓN 5 · CONTACTO                                       -->
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <section id="contacto" class="py-24 bg-[#060b14]">
+      <div class="max-w-7xl mx-auto px-6 lg:px-12">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+
+          <!-- Info izquierda -->
+          <div class="animate-on-scroll">
+            <div class="flex items-center gap-3 mb-4">
+              <span class="w-8 h-[2px] bg-blue-500 rounded" />
+              <span class="text-blue-400 font-['Barlow_Condensed'] uppercase tracking-widest text-sm font-semibold">
+                Escríbenos
+              </span>
+            </div>
+            <h2 class="font-['Bebas_Neue'] text-5xl lg:text-6xl text-white leading-tight mb-6">
+              ¿Tienes algo <span class="text-blue-400">que decirnos?</span>
+            </h2>
+            <p class="text-slate-400 leading-relaxed mb-10">
+              Ya sea que quieras colaborar, enviarnos una película para reseñar, reportar un error o simplemente
+              saludarnos, estamos aquí. Respondemos en menos de 48 horas.
+            </p>
+
+            <!-- Contact info items -->
+            <div class="space-y-5">
+              {[
+                {
+                  icon: "fa-solid fa-envelope",
+                  titulo: "Correo electrónico",
+                  valor: "hola@cine-hub.com",
+                },
+                {
+                  icon: "fa-brands fa-twitter",
+                  titulo: "Twitter / X",
+                  valor: "@CineHubOficial",
+                },
+                {
+                  icon: "fa-solid fa-clock",
+                  titulo: "Tiempo de respuesta",
+                  valor: "Menos de 48 horas",
+                },
+              ].map(({ icon, titulo, valor }) => (
+                <div class="flex items-center gap-4">
+                  <div class="w-11 h-11 rounded-xl bg-blue-600/15 border border-blue-500/20 flex items-center justify-center flex-shrink-0">
+                    <i class={`${icon} text-blue-400`} />
+                  </div>
+                  <div>
+                    <p class="text-slate-500 text-xs uppercase tracking-wider">{titulo}</p>
+                    <p class="text-white font-medium">{valor}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <!-- Formulario derecha -->
+          <!-- 
+            Nota: Astro genera HTML estático. Para formularios funcionales en Vercel puedes usar:
+            - Vercel Functions (api/contact.ts)
+            - Formspree.io (reemplaza action="#" con tu endpoint)
+            - Web3Forms
+          -->
+          <div class="animate-on-scroll">
+            <form
+              id="contact-form"
+              action="#"
+              method="POST"
+              class="bg-slate-900/50 rounded-2xl border border-slate-700/50 p-8 space-y-5"
+              novalidate
+            >
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <!-- Nombre -->
+                <div>
+                  <label for="nombre" class="block text-sm font-medium text-slate-300 mb-2">
+                    Nombre <span class="text-blue-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="nombre"
+                    name="nombre"
+                    required
+                    autocomplete="given-name"
+                    placeholder="Tu nombre"
+                    class="w-full px-4 py-3 bg-slate-800/60 border border-slate-700/60 hover:border-slate-600/60 focus:border-blue-500/60 focus:ring-2 focus:ring-blue-500/20 rounded-lg text-white placeholder-slate-500 text-sm outline-none transition-all duration-200"
+                  />
+                </div>
+
+                <!-- Email -->
+                <div>
+                  <label for="email" class="block text-sm font-medium text-slate-300 mb-2">
+                    Correo <span class="text-blue-500">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    required
+                    autocomplete="email"
+                    placeholder="tu@correo.com"
+                    class="w-full px-4 py-3 bg-slate-800/60 border border-slate-700/60 hover:border-slate-600/60 focus:border-blue-500/60 focus:ring-2 focus:ring-blue-500/20 rounded-lg text-white placeholder-slate-500 text-sm outline-none transition-all duration-200"
+                  />
+                </div>
+              </div>
+
+              <!-- Asunto -->
+              <div>
+                <label for="asunto" class="block text-sm font-medium text-slate-300 mb-2">
+                  Asunto
+                </label>
+                <select
+                  id="asunto"
+                  name="asunto"
+                  class="w-full px-4 py-3 bg-slate-800/60 border border-slate-700/60 hover:border-slate-600/60 focus:border-blue-500/60 focus:ring-2 focus:ring-blue-500/20 rounded-lg text-white text-sm outline-none transition-all duration-200 appearance-none cursor-pointer"
+                >
+                  <option value="">Selecciona un asunto…</option>
+                  <option value="colaboracion">Propuesta de colaboración</option>
+                  <option value="resena">Solicitar una reseña</option>
+                  <option value="error">Reportar un error</option>
+                  <option value="otro">Otro</option>
+                </select>
+              </div>
+
+              <!-- Mensaje -->
+              <div>
+                <label for="mensaje" class="block text-sm font-medium text-slate-300 mb-2">
+                  Mensaje <span class="text-blue-500">*</span>
+                </label>
+                <textarea
+                  id="mensaje"
+                  name="mensaje"
+                  required
+                  rows={5}
+                  placeholder="Cuéntanos lo que tienes en mente…"
+                  class="w-full px-4 py-3 bg-slate-800/60 border border-slate-700/60 hover:border-slate-600/60 focus:border-blue-500/60 focus:ring-2 focus:ring-blue-500/20 rounded-lg text-white placeholder-slate-500 text-sm outline-none transition-all duration-200 resize-none"
+                />
+              </div>
+
+              <!-- Submit -->
+              <button
+                type="submit"
+                id="submit-btn"
+                class="w-full flex items-center justify-center gap-2 py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-lg transition-all duration-200 shadow-lg shadow-blue-900/30 hover:shadow-blue-700/40 hover:-translate-y-0.5 active:translate-y-0"
+              >
+                <i class="fa-solid fa-paper-plane"></i>
+                Enviar mensaje
+              </button>
+
+              <!-- Mensaje de éxito (oculto inicialmente) -->
+              <div
+                id="success-msg"
+                class="hidden flex items-center gap-3 p-4 rounded-lg bg-green-900/30 border border-green-500/30 text-green-400 text-sm"
+              >
+                <i class="fa-solid fa-circle-check text-green-400"></i>
+                ¡Mensaje enviado! Te responderemos pronto.
+              </div>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <Footer />
+
+</Layout>
+
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<!--  SCRIPT DEL CARRUSEL                                              -->
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<script>
+  const track = document.getElementById("carousel-track") as HTMLElement | null;
+  const dots = document.querySelectorAll<HTMLButtonElement>(".carousel-dot");
+  const total = dots.length;
+  let current = 0;
+  let autoplayTimer: ReturnType<typeof setInterval>;
+
+  function goTo(index: number) {
+    current = (index + total) % total;
+    if (track) track.style.transform = `translateX(-${current * 100}%)`;
+
+    dots.forEach((dot, i) => {
+      dot.classList.toggle("w-8", i === current);
+      dot.classList.toggle("w-2", i !== current);
+      dot.classList.toggle("bg-blue-500", i === current);
+      dot.classList.toggle("bg-white/30", i !== current);
+    });
+  }
+
+  function startAutoplay() {
+    autoplayTimer = setInterval(() => goTo(current + 1), 6000);
+  }
+
+  function stopAutoplay() {
+    clearInterval(autoplayTimer);
+  }
+
+  // Botones de control
+  document.getElementById("carousel-prev")?.addEventListener("click", () => {
+    stopAutoplay();
+    goTo(current - 1);
+    startAutoplay();
+  });
+
+  document.getElementById("carousel-next")?.addEventListener("click", () => {
+    stopAutoplay();
+    goTo(current + 1);
+    startAutoplay();
+  });
+
+  // Puntos indicadores
+  dots.forEach((dot, i) => {
+    dot.addEventListener("click", () => {
+      stopAutoplay();
+      goTo(i);
+      startAutoplay();
+    });
+  });
+
+  // Touch / Swipe support
+  let touchStartX = 0;
+  track?.addEventListener("touchstart", (e) => {
+    touchStartX = e.touches[0].clientX;
+  }, { passive: true });
+
+  track?.addEventListener("touchend", (e) => {
+    const diff = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) {
+      stopAutoplay();
+      goTo(diff > 0 ? current + 1 : current - 1);
+      startAutoplay();
+    }
+  }, { passive: true });
+
+  // Pausar en hover
+  track?.addEventListener("mouseenter", stopAutoplay);
+  track?.addEventListener("mouseleave", startAutoplay);
+
+  // Iniciar
+  startAutoplay();
+</script>
+
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<!--  SCRIPT DEL FORMULARIO (demo: muestra mensaje de éxito)           -->
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<script>
+  const form = document.getElementById("contact-form") as HTMLFormElement | null;
+  const successMsg = document.getElementById("success-msg");
+  const submitBtn = document.getElementById("submit-btn");
+
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    // Aquí iría tu lógica de envío real (Formspree, Vercel Function, etc.)
+    // Por ahora simulamos la respuesta:
+    if (submitBtn) {
+      submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Enviando…';
+      submitBtn.setAttribute("disabled", "true");
+    }
+
+    setTimeout(() => {
+      form.reset();
+      successMsg?.classList.remove("hidden");
+      successMsg?.classList.add("flex");
+      if (submitBtn) {
+        submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Enviar mensaje';
+        submitBtn.removeAttribute("disabled");
+      }
+    }, 1500);
+  });
+</script>

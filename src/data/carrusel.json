@@ -1,0 +1,57 @@
+[
+  {
+    "id": 1,
+    "titulo": "Guardianes de la Galaxia Vol. 3",
+    "genero": "Acción · Ciencia Ficción · Aventura",
+    "anio": 2023,
+    "director": "James Gunn",
+    "descripcion": "El equipo de los Guardianes emprende una misión que los pondrá a prueba como nunca antes. El pasado de Rocket amenaza con desmoronar al grupo, en una aventura cósmica llena de humor y corazón.",
+    "imagen": "https://image.tmdb.org/t/p/original/r2J02Z2OpNTctfOSN1Ydgii51I3.jpg",
+    "calificacion": 8.0,
+    "slug": "guardianes-galaxia-vol3"
+  },
+  {
+    "id": 2,
+    "titulo": "Oppenheimer",
+    "genero": "Drama · Historia · Thriller",
+    "anio": 2023,
+    "director": "Christopher Nolan",
+    "descripcion": "La historia del físico teórico J. Robert Oppenheimer y su papel en el desarrollo de la primera bomba atómica durante la Segunda Guerra Mundial. Una obra monumental de Nolan.",
+    "imagen": "https://image.tmdb.org/t/p/original/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg",
+    "calificacion": 8.9,
+    "slug": "oppenheimer"
+  },
+  {
+    "id": 3,
+    "titulo": "Dune: Parte Dos",
+    "genero": "Ciencia Ficción · Aventura · Drama",
+    "anio": 2024,
+    "director": "Denis Villeneuve",
+    "descripcion": "Paul Atreides se une a los Fremen y emprende un viaje espiritual y bélico para vengar a su familia mientras intenta evitar el terrible futuro que solo él puede prever.",
+    "imagen": "https://image.tmdb.org/t/p/original/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg",
+    "calificacion": 8.5,
+    "slug": "dune-parte-dos"
+  },
+  {
+    "id": 4,
+    "titulo": "Poor Things",
+    "genero": "Ciencia Ficción · Romance · Comedia",
+    "anio": 2023,
+    "director": "Yorgos Lanthimos",
+    "descripcion": "Bella Baxter, una joven revivida por un científico excéntrico, huye con un abogado libertino y atraviesa un mundo lleno de aventuras que la llevan a su propia liberación.",
+    "imagen": "https://image.tmdb.org/t/p/original/kCGlIMHnOm8JPXILbe2jnUNiPUCr.jpg",
+    "calificacion": 8.0,
+    "slug": "poor-things"
+  },
+  {
+    "id": 5,
+    "titulo": "Killers of the Flower Moon",
+    "genero": "Drama · Crimen · Historia",
+    "anio": 2023,
+    "director": "Martin Scorsese",
+    "descripcion": "En la década de 1920, los Osage de Oklahoma se convierten en objetivo de una serie de asesinatos en serie tras descubrir petróleo en sus tierras. El FBI investiga el caso.",
+    "imagen": "https://image.tmdb.org/t/p/original/dB6jREf0jJPMFSJNELyBiNELXaY.jpg",
+    "calificacion": 7.7,
+    "slug": "killers-flower-moon"
+  }
+]
