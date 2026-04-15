@@ -1,0 +1,153 @@
+[
+  {
+    "id": 1,
+    "title": "The Last of Us — Temporada 2",
+    "description": "Cinco años después de los eventos de la primera temporada, Joel y Ellie se ven arrastrados a un conflicto entre sí y contra un mundo todavía más peligroso y brutal que el que dejaron atrás.",
+    "image": "https://image.tmdb.org/t/p/w780/aUQKIpZZ31KWbpdHMCmaV76u78T.jpg",
+    "trailer": "https://www.youtube.com/watch?v=2Cl1Qs9EeDE",
+    "categoria": "reciente",
+    "anio": 2025,
+    "creador": "Craig Mazin & Neil Druckmann",
+    "temporadas": 2,
+    "episodios": 7,
+    "calificacion": 8.9,
+    "genero": ["Drama", "Post-apocalíptico", "Terror"],
+    "plataformas": [
+      { "nombre": "Max", "url": "https://www.max.com" },
+      { "nombre": "HBO", "url": "https://www.hbo.com" }
+    ]
+  },
+  {
+    "id": 2,
+    "title": "Severance — Temporada 2",
+    "description": "Los empleados de Lumon Industries descubren que sus vidas dentro y fuera de la oficina están más entrelazadas de lo que pensaban. El thriller corporativo más perturbador de la televisión alcanza nuevas cotas de tensión.",
+    "image": "https://image.tmdb.org/t/p/w780/sEGj3aFc95sHKb2RQOLAL6GZ6Ku.jpg",
+    "trailer": "https://www.youtube.com/watch?v=tYp7dPnHN1A",
+    "categoria": "reciente",
+    "anio": 2025,
+    "creador": "Dan Erickson",
+    "temporadas": 2,
+    "episodios": 10,
+    "calificacion": 9.0,
+    "genero": ["Thriller", "Ciencia Ficción", "Drama"],
+    "plataformas": [
+      { "nombre": "Apple TV+", "url": "https://tv.apple.com" }
+    ]
+  },
+  {
+    "id": 3,
+    "title": "Andor — Temporada 2",
+    "description": "La segunda y última temporada narra los cinco años previos a Rogue One, mostrando cómo Cassian Andor se convierte en el héroe de la Alianza Rebelde en la era más oscura del Imperio Galáctico.",
+    "image": "https://image.tmdb.org/t/p/w780/59SVNwLfoMnZPPB6ukW6dlPxAdI.jpg",
+    "trailer": "https://www.youtube.com/watch?v=9A2MmBVK5-0",
+    "categoria": "reciente",
+    "anio": 2025,
+    "creador": "Tony Gilroy",
+    "temporadas": 2,
+    "episodios": 12,
+    "calificacion": 8.7,
+    "genero": ["Ciencia Ficción", "Drama", "Espionaje"],
+    "plataformas": [
+      { "nombre": "Disney+", "url": "https://www.disneyplus.com" }
+    ]
+  },
+  {
+    "id": 4,
+    "title": "Twin Peaks",
+    "description": "El agente del FBI Dale Cooper investiga el asesinato de Laura Palmer en un pequeño pueblo de Washington que esconde secretos oscuros y sobrenaturales. Lynch y Frost crearon la serie que redefinió la televisión para siempre.",
+    "image": "https://image.tmdb.org/t/p/w780/lFssv32iXlkfxjDL3J8JoGb4Bfz.jpg",
+    "trailer": "https://www.youtube.com/watch?v=lB1M6u9QQXk",
+    "categoria": "clasico",
+    "anio": 1990,
+    "creador": "David Lynch & Mark Frost",
+    "temporadas": 3,
+    "episodios": 48,
+    "calificacion": 8.8,
+    "genero": ["Misterio", "Thriller", "Sobrenatural"],
+    "plataformas": [
+      { "nombre": "Paramount+", "url": "https://www.paramountplus.com" },
+      { "nombre": "MUBI", "url": "https://mubi.com" }
+    ]
+  },
+  {
+    "id": 5,
+    "title": "The Sopranos",
+    "description": "Tony Soprano, jefe de la mafia de Nueva Jersey, intenta equilibrar las demandas de su familia criminal con las de su familia real mientras asiste a sesiones de terapia. La serie que elevó la televisión al nivel del arte.",
+    "image": "https://image.tmdb.org/t/p/w780/57okJJs3rlAMmKPkVgrQoLNEMpj.jpg",
+    "trailer": "https://www.youtube.com/watch?v=FT3hy1HhBQk",
+    "categoria": "clasico",
+    "anio": 1999,
+    "creador": "David Chase",
+    "temporadas": 6,
+    "episodios": 86,
+    "calificacion": 9.2,
+    "genero": ["Crimen", "Drama", "Thriller"],
+    "plataformas": [
+      { "nombre": "Max", "url": "https://www.max.com" },
+      { "nombre": "HBO", "url": "https://www.hbo.com" }
+    ]
+  },
+  {
+    "id": 6,
+    "title": "Battlestar Galactica",
+    "description": "Los sobrevivientes de la humanidad huyen en una flota de naves espaciales perseguidos por los Cylons, robots que ellos mismos crearon. Una alegoría política y filosófica disfrazada de space opera que no envejece.",
+    "image": "https://image.tmdb.org/t/p/w780/gSjTQQHTbSMEMOLnMSzTBP7FSBP.jpg",
+    "trailer": "https://www.youtube.com/watch?v=kDKJrRUoKSU",
+    "categoria": "clasico",
+    "anio": 2004,
+    "creador": "Ronald D. Moore",
+    "temporadas": 4,
+    "episodios": 73,
+    "calificacion": 8.7,
+    "genero": ["Ciencia Ficción", "Drama", "Acción"],
+    "plataformas": [
+      { "nombre": "Peacock", "url": "https://www.peacocktv.com" },
+      { "nombre": "Amazon Prime", "url": "https://www.primevideo.com" }
+    ]
+  },
+  {
+    "id": 7,
+    "title": "The Penguin — Temporada 2",
+    "description": "Oz Cobb consolida su poder en el submundo criminal de Gotham City. La secuela del spin-off de The Batman promete expandir el universo oscuro con nuevos villanos y conflictos de poder entre las familias del crimen organizado.",
+    "image": "https://image.tmdb.org/t/p/w780/mOFMCWCiJIbEBjFPSBBW5gzHMeQ.jpg",
+    "trailer": "https://www.youtube.com/watch?v=PT3pqAHCPas",
+    "categoria": "proximo",
+    "anio": 2025,
+    "creador": "Lauren LeFranc",
+    "temporadas": 2,
+    "episodios": null,
+    "calificacion": null,
+    "genero": ["Crimen", "Drama", "Superhéroes"],
+    "plataformas": []
+  },
+  {
+    "id": 8,
+    "title": "Dune: Prophecy — Temporada 2",
+    "description": "Las Hermanas Harkonnen continúan forjando el futuro de la Orden Bene Gesserit 10,000 años antes de Paul Atreides. La precuela de la saga de Villeneuve profundiza en los misterios de Arrakis y las manipulaciones genéticas milenarias.",
+    "image": "https://image.tmdb.org/t/p/w780/73pGCLAKbW2MFKSz6adRqIKaImR.jpg",
+    "trailer": "https://www.youtube.com/watch?v=tHf9bFsaWMc",
+    "categoria": "proximo",
+    "anio": 2025,
+    "creador": "Diane Ademu-John & Alison Schapker",
+    "temporadas": 2,
+    "episodios": null,
+    "calificacion": null,
+    "genero": ["Ciencia Ficción", "Drama", "Fantasía"],
+    "plataformas": []
+  },
+  {
+    "id": 9,
+    "title": "The White Lotus — Temporada 3",
+    "description": "La antología de Mike White viaja a Tailandia para explorar las dinámicas de poder, el privilegio y la oscuridad oculta tras el paraíso de un resort de lujo. Nuevos personajes, mismo deleite perturbador.",
+    "image": "https://image.tmdb.org/t/p/w780/pFBcNFi4unOvLlFIRB3SDMm6AkO.jpg",
+    "trailer": "https://www.youtube.com/watch?v=kM6Rx24mdD8",
+    "categoria": "proximo",
+    "anio": 2025,
+    "creador": "Mike White",
+    "temporadas": 3,
+    "episodios": null,
+    "calificacion": null,
+    "genero": ["Drama", "Sátira", "Misterio"],
+    "plataformas": []
+  }
+]

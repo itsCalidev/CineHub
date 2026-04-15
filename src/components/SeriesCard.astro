@@ -1,0 +1,366 @@
+---
+// src/components/SeriesCard.astro
+// Convierte la función renderSeries() del PHP original en un componente reutilizable.
+// Novedad respecto a MovieCard: dropdown de plataformas con hover puro en Tailwind.
+
+export interface Plataforma {
+  nombre: string;
+  url: string;
+}
+
+export interface Props {
+  title:       string;
+  description: string;
+  image:       string;
+  trailer:     string;
+  plataformas?: Plataforma[];
+  anio?:        number;
+  creador?:     string;
+  temporadas?:  number;
+  episodios?:   number | null;
+  calificacion?: number | null;
+  genero?:      string[];
+  showCategoria?: boolean;
+  categoria?:   "reciente" | "clasico" | "proximo";
+}
+
+const {
+  title,
+  description,
+  image,
+  trailer,
+  plataformas   = [],
+  anio,
+  creador,
+  temporadas,
+  episodios,
+  calificacion,
+  genero        = [],
+  showCategoria = false,
+  categoria,
+} = Astro.props;
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+const tienePlataformas = plataformas.length > 0;
+
+const categoriaLabel: Record<string, string> = {
+  reciente: "Estreno",
+  clasico:  "Clásico",
+  proximo:  "Próximamente",
+};
+
+const categoriaColor: Record<string, string> = {
+  reciente: "bg-blue-600/20 text-blue-400 border-blue-500/30",
+  clasico:  "bg-amber-600/20 text-amber-400 border-amber-500/30",
+  proximo:  "bg-cyan-600/20  text-cyan-400  border-cyan-500/30",
+};
+
+// Íconos de plataforma → Font Awesome class
+const iconoPorPlataforma: Record<string, string> = {
+  "Netflix":       "fa-brands fa-n",
+  "HBO":           "fa-solid fa-tv",
+  "Max":           "fa-solid fa-m",
+  "Disney+":       "fa-solid fa-d",
+  "Apple TV+":     "fa-brands fa-apple",
+  "Amazon Prime":  "fa-brands fa-amazon",
+  "Peacock":       "fa-solid fa-p",
+  "Paramount+":    "fa-solid fa-star",
+  "MUBI":          "fa-solid fa-film",
+};
+
+function iconoDe(nombre: string): string {
+  return iconoPorPlataforma[nombre] ?? "fa-solid fa-play";
+}
+
+const starsFull  = calificacion ? Math.floor(calificacion / 2) : 0;
+const starsEmpty = 5 - starsFull;
+---
+
+<article
+  class="
+    group relative flex flex-col rounded-2xl overflow-visible
+    bg-slate-900 border border-slate-700/50
+    hover:border-blue-500/40
+    transition-all duration-400 ease-out
+    hover:-translate-y-2 hover:shadow-2xl hover:shadow-blue-900/30
+  "
+>
+  <!-- ── IMAGEN ────────────────────────────────────────────────── -->
+  <div class="relative overflow-hidden rounded-t-2xl aspect-[2/3] max-h-72">
+    <img
+      src={image}
+      alt={`Póster de ${title}`}
+      loading="lazy"
+      decoding="async"
+      class="
+        w-full h-full object-cover object-center
+        transition-transform duration-700 ease-out
+        group-hover:scale-110
+      "
+    />
+
+    <!-- Degradado inferior -->
+    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/30 to-transparent" />
+
+    <!-- Badge de categoría -->
+    {showCategoria && categoria && (
+      <span class={`
+        absolute top-3 left-3 px-3 py-1 rounded-full
+        border text-xs font-semibold uppercase tracking-widest backdrop-blur-sm
+        ${categoriaColor[categoria]}
+      `}>
+        {categoriaLabel[categoria]}
+      </span>
+    )}
+
+    <!-- Badge de calificación -->
+    {calificacion != null && (
+      <div
+        class="
+          absolute top-3 right-3 w-10 h-10 rounded-full
+          bg-slate-900/80 backdrop-blur-sm border border-slate-600/60
+          flex items-center justify-center
+          text-white font-['Bebas_Neue'] text-base leading-none
+        "
+        title={`Calificación: ${calificacion}/10`}
+      >
+        {calificacion}
+      </div>
+    )}
+
+    <!-- Overlay play al hover -->
+    <div class="
+      absolute inset-0 flex items-center justify-center
+      bg-blue-950/60 backdrop-blur-[2px]
+      opacity-0 group-hover:opacity-100
+      transition-opacity duration-300
+    ">
+      <a
+        href={trailer}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={`Ver tráiler de ${title}`}
+        class="
+          w-16 h-16 rounded-full bg-blue-600 hover:bg-blue-500
+          flex items-center justify-center
+          shadow-xl shadow-blue-900/60
+          transition-transform duration-200 hover:scale-110 active:scale-95
+        "
+        onclick="event.stopPropagation()"
+      >
+        <i class="fa-solid fa-play text-white text-xl ml-1"></i>
+      </a>
+    </div>
+  </div>
+
+  <!-- ── CONTENIDO ─────────────────────────────────────────────── -->
+  <div class="flex flex-col flex-1 p-5 gap-3">
+
+    <!-- Chips de género -->
+    {genero.length > 0 && (
+      <div class="flex flex-wrap gap-1.5">
+        {genero.slice(0, 3).map((g) => (
+          <span class="
+            px-2 py-0.5 rounded bg-slate-800 text-slate-400
+            text-[10px] font-medium uppercase tracking-wider
+            border border-slate-700/60
+          ">
+            {g}
+          </span>
+        ))}
+      </div>
+    )}
+
+    <!-- Título -->
+    <h3 class="
+      font-['Bebas_Neue'] text-2xl leading-tight tracking-wide
+      text-white group-hover:text-blue-300
+      transition-colors duration-300 line-clamp-2
+    ">
+      {title}
+    </h3>
+
+    <!-- Meta: año · creador · temporadas · episodios -->
+    <div class="flex items-center flex-wrap gap-x-3 gap-y-1 text-xs text-slate-500">
+      {anio && (
+        <span class="flex items-center gap-1">
+          <i class="fa-solid fa-calendar-days text-blue-500/70 text-[10px]" />
+          {anio}
+        </span>
+      )}
+      {creador && (
+        <>
+          <span class="w-[1px] h-3 bg-slate-700" />
+          <span class="flex items-center gap-1 truncate max-w-[120px]" title={creador}>
+            <i class="fa-solid fa-user-pen text-blue-500/70 text-[10px]" />
+            {creador.split("&")[0].trim()}
+          </span>
+        </>
+      )}
+      {temporadas && (
+        <>
+          <span class="w-[1px] h-3 bg-slate-700" />
+          <span class="flex items-center gap-1">
+            <i class="fa-solid fa-layer-group text-blue-500/70 text-[10px]" />
+            {temporadas} temp.
+          </span>
+        </>
+      )}
+      {episodios != null && (
+        <>
+          <span class="w-[1px] h-3 bg-slate-700" />
+          <span class="flex items-center gap-1">
+            <i class="fa-solid fa-list text-blue-500/70 text-[10px]" />
+            {episodios} eps.
+          </span>
+        </>
+      )}
+    </div>
+
+    <!-- Estrellas -->
+    {calificacion != null && (
+      <div class="flex items-center gap-1" aria-label={`Calificación: ${calificacion} de 10`}>
+        {Array.from({ length: starsFull  }, () => (
+          <i class="fa-solid  fa-star text-yellow-400 text-xs" />
+        ))}
+        {Array.from({ length: starsEmpty }, () => (
+          <i class="fa-regular fa-star text-slate-600 text-xs" />
+        ))}
+        <span class="ml-1 text-slate-500 text-[11px]">({calificacion}/10)</span>
+      </div>
+    )}
+
+    <!-- Descripción -->
+    <p class="text-slate-400 text-sm leading-relaxed line-clamp-3 flex-1">
+      {description}
+    </p>
+
+    <!-- ── BOTONES ─────────────────────────────────────────────── -->
+    <div class="mt-auto flex items-stretch gap-2">
+
+      <!-- Botón: Ver Tráiler (siempre visible) -->
+      <a
+        href={trailer}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="
+          flex-1 flex items-center justify-center gap-2
+          py-2.5 px-3 rounded-xl
+          bg-blue-600/10 hover:bg-blue-600
+          border border-blue-500/30 hover:border-blue-500
+          text-blue-400 hover:text-white
+          text-sm font-semibold
+          transition-all duration-250 group/trailer
+        "
+      >
+        <i class="fa-solid fa-circle-play text-base transition-transform duration-200 group-hover/trailer:scale-110" />
+        Ver Tráiler
+      </a>
+
+      <!-- ──────────────────────────────────────────────────────── -->
+      <!--  DROPDOWN "VER SERIES" — HOVER PURO CON TAILWIND         -->
+      <!--                                                           -->
+      <!--  Estrategia:                                              -->
+      <!--  1. Un div `relative group/dropdown` envuelve botón+menú -->
+      <!--  2. El menú tiene `opacity-0 invisible translate-y-1`     -->
+      <!--     y pasa a `group-hover/dropdown:opacity-100            -->
+      <!--     group-hover/dropdown:visible                          -->
+      <!--     group-hover/dropdown:translate-y-0` al hacer hover.  -->
+      <!--  3. `pointer-events-none` en reposo para no bloquear      -->
+      <!--     clicks en tarjetas vecinas.                           -->
+      <!-- ──────────────────────────────────────────────────────── -->
+      {tienePlataformas && (
+        <div class="relative group/dropdown flex-1">
+
+          <!-- Botón disparador -->
+          <button
+            type="button"
+            aria-haspopup="true"
+            aria-expanded="false"
+            class="
+              w-full h-full flex items-center justify-center gap-2
+              py-2.5 px-3 rounded-xl
+              bg-slate-700/40 hover:bg-slate-700
+              border border-slate-600/40 hover:border-slate-500
+              text-slate-300 hover:text-white
+              text-sm font-semibold
+              transition-all duration-250
+            "
+          >
+            <i class="fa-solid fa-tv text-sm" />
+            Ver serie
+            <i class="
+              fa-solid fa-chevron-down text-[10px] opacity-60
+              transition-transform duration-300
+              group-hover/dropdown:rotate-180
+            " />
+          </button>
+
+          <!-- Menú desplegable -->
+          <div
+            role="menu"
+            class="
+              absolute bottom-[calc(100%+8px)] left-0 right-0 z-50
+              bg-slate-800 border border-slate-600/60
+              rounded-xl shadow-2xl shadow-black/60 overflow-hidden
+
+              opacity-0 invisible translate-y-1
+              group-hover/dropdown:opacity-100
+              group-hover/dropdown:visible
+              group-hover/dropdown:translate-y-0
+
+              transition-all duration-250 ease-out
+              pointer-events-none
+              group-hover/dropdown:pointer-events-auto
+            "
+          >
+            <!-- Cabecera del menú -->
+            <div class="px-3 py-2 border-b border-slate-700/60">
+              <p class="text-slate-500 text-[10px] uppercase tracking-widest font-semibold">
+                Disponible en
+              </p>
+            </div>
+
+            <!-- Lista de plataformas -->
+            <ul role="list" class="py-1">
+              {plataformas.map((p) => (
+                <li role="none">
+                  <a
+                    href={p.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    role="menuitem"
+                    class="
+                      flex items-center gap-3 px-3 py-2.5
+                      text-slate-300 hover:text-white
+                      hover:bg-blue-600/20
+                      text-sm font-medium
+                      transition-colors duration-150
+                      group/item
+                    "
+                  >
+                    <!-- Ícono de plataforma -->
+                    <span class="
+                      w-7 h-7 rounded-lg bg-slate-700 group-hover/item:bg-blue-600/40
+                      flex items-center justify-center
+                      transition-colors duration-150 flex-shrink-0
+                    ">
+                      <i class={`${iconoDe(p.nombre)} text-blue-400 group-hover/item:text-blue-300 text-xs`} />
+                    </span>
+                    {p.nombre}
+                    <i class="
+                      fa-solid fa-arrow-up-right-from-square text-[9px]
+                      ml-auto text-slate-600 group-hover/item:text-blue-400
+                      transition-colors
+                    " />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
+
+    </div><!-- /botones -->
+  </div><!-- /contenido -->
+</article>
