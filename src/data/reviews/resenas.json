@@ -1,0 +1,74 @@
+[
+  {
+    "id": 1,
+    "title": "Oppenheimer",
+    "image": "https://image.tmdb.org/t/p/w780/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg",
+    "comment": "Nolan entrega su obra más ambiciosa: una explosión narrativa que fragmenta el tiempo con maestría. Cillian Murphy encarna a Oppenheimer con una intensidad sobrecogedora, capturando tanto el genio como la tragedia de un hombre que dio forma al mundo moderno. La fotografía de Hoyte van Hoytema y la partitura de Göransson se fusionan en una experiencia que va más allá del cine biográfico. Imprescindible.",
+    "type": "pelicula",
+    "averageRating": 4.8,
+    "totalReviews": 3847,
+    "director": "Christopher Nolan",
+    "anio": 2023,
+    "genero": ["Drama", "Historia", "Thriller"]
+  },
+  {
+    "id": 2,
+    "title": "Dune: Parte Dos",
+    "image": "https://image.tmdb.org/t/p/w780/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg",
+    "comment": "Villeneuve consolida su visión épica con una segunda parte que supera a la primera en escala y emoción. La relación entre Paul y Chani se convierte en el corazón narrativo, mientras la cinematografía de Greig Fraser transforma Arrakis en un lienzo de proporciones mitológicas. El diseño de sonido es una obra de arte en sí misma. Una de las mejores adaptaciones de ciencia ficción de la historia.",
+    "type": "pelicula",
+    "averageRating": 4.6,
+    "totalReviews": 2914,
+    "director": "Denis Villeneuve",
+    "anio": 2024,
+    "genero": ["Ciencia Ficción", "Aventura", "Drama"]
+  },
+  {
+    "id": 3,
+    "title": "Poor Things",
+    "image": "https://image.tmdb.org/t/p/w780/kCGlIMHnOm8JPXILbe2jnUNiPUCr.jpg",
+    "comment": "Lanthimos construye un universo victoriano delirante donde Emma Stone brilla en la actuación de su carrera. La película es una fábula de emancipación violentamente divertida, envuelta en una fotografía de ojo de pez que distorsiona la realidad con intención. El guion de Tony McNamara es acerado, capaz de provocar carcajadas y reflexión en el mismo aliento. Cine que incomoda para liberar.",
+    "type": "pelicula",
+    "averageRating": 4.3,
+    "totalReviews": 1652,
+    "director": "Yorgos Lanthimos",
+    "anio": 2023,
+    "genero": ["Ciencia Ficción", "Romance", "Comedia"]
+  },
+  {
+    "id": 4,
+    "title": "Severance — T1",
+    "image": "https://image.tmdb.org/t/p/w780/sEGj3aFc95sHKb2RQOLAL6GZ6Ku.jpg",
+    "comment": "Severance es el thriller más perturbador que ha producido la televisión en años. La premisa —empleados que separan quirúrgicamente su memoria laboral de la personal— funciona como una alegoría demoledora del capitalismo tardío. Ben Stiller dirige con una frialdad kubrickiana que pone los pelos de punta. Adam Scott entrega la actuación más contenida y expresiva de su carrera. Cada episodio termina dejándote sin respiración.",
+    "type": "serie",
+    "averageRating": 4.9,
+    "totalReviews": 5128,
+    "director": "Dan Erickson",
+    "anio": 2022,
+    "genero": ["Thriller", "Ciencia Ficción", "Drama"]
+  },
+  {
+    "id": 5,
+    "title": "The Last of Us — T1",
+    "image": "https://image.tmdb.org/t/p/w780/uKRGECbKMt7GZ4yTLwWnBx4ZDKY.jpg",
+    "comment": "La adaptación que los videojuegos necesitaban para ser tomados en serio por la cultura mainstream. Craig Mazin y Neil Druckmann respetan la esencia emocional del juego original mientras expanden el mundo con episodios que se valen por sí solos —el episodio 3 de Bill y Frank ya es televisión histórica. Pedro Pascal y Bella Ramsey construyen una de las relaciones paterno-filiales más conmovedoras del medio.",
+    "type": "serie",
+    "averageRating": 4.7,
+    "totalReviews": 6893,
+    "director": "Craig Mazin & Neil Druckmann",
+    "anio": 2023,
+    "genero": ["Drama", "Post-apocalíptico", "Terror"]
+  },
+  {
+    "id": 6,
+    "title": "Andor — T1",
+    "image": "https://image.tmdb.org/t/p/w780/59SVNwLfoMnZPPB6ukW6dlPxAdI.jpg",
+    "comment": "Tony Gilroy deconstruye el universo Star Wars para entregarnos algo inédito: un thriller político de espionaje que no necesita sables de luz ni la Fuerza para apasionarte. Andor es sobre la resistencia, la clase obrera y el precio de la dignidad bajo un régimen fascista. Diego Luna transforma a Cassian en un héroe complejo y contradictorio. El arco de Maarva en el episodio 10 es, sencillamente, perfecto.",
+    "type": "serie",
+    "averageRating": 4.8,
+    "totalReviews": 4201,
+    "director": "Tony Gilroy",
+    "anio": 2022,
+    "genero": ["Ciencia Ficción", "Espionaje", "Drama"]
+  }
+]

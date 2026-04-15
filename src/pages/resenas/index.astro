@@ -1,0 +1,475 @@
+---
+// src/pages/resenas.astro
+
+import Layout     from "../../layouts/Layout.astro";
+import Header     from "../../components/Header.astro";
+import Footer     from "../../components/Footer.astro";
+import ReviewCard from "../../components/ReviewCard.astro";
+
+// ── 1. DATOS ──────────────────────────────────────────────────────────────────
+import rawResenas from "../../data/reviews/resenas.json";
+
+interface Resena {
+  id:            number;
+  title:         string;
+  image:         string;
+  comment:       string;
+  type:          "pelicula" | "serie";
+  averageRating: number;
+  totalReviews:  number;
+  director?:     string;
+  anio?:         number;
+  genero?:       string[];
+}
+
+const resenas = rawResenas as Resena[];
+
+// ── 2. FILTRADO ───────────────────────────────────────────────────────────────
+// Equivalente a los dos SELECT ... WHERE type=... del PHP original
+const resenasPeliculas = resenas.filter((r) => r.type === "pelicula");
+const resenasSeries    = resenas.filter((r) => r.type === "serie");
+
+// ── 3. META ───────────────────────────────────────────────────────────────────
+const totalResenas = resenas.length;
+
+// Promedio global de calificaciones (dato para el hero)
+const promedioGlobal = (
+  resenas.reduce((acc, r) => acc + r.averageRating, 0) / totalResenas
+).toFixed(1);
+
+// Votaciones totales acumuladas
+const totalVotos = resenas.reduce((acc, r) => acc + r.totalReviews, 0);
+function formatCount(n: number): string {
+  if (n >= 1000) return `${(n / 1000).toFixed(1)}K`;
+  return String(n);
+}
+---
+
+<!--
+  SweetAlert2 se incluye en este Layout mediante la prop `extraHead`.
+  Si tu Layout.astro no acepta una slot para el head, agrega la etiqueta
+  <script> del CDN directamente dentro de Layout.astro, antes del </head>.
+
+  Aquí lo incluimos directamente en la página via un <Fragment> en el head
+  usando el slot "head" del Layout (ver Layout.astro → <slot name="head" />).
+  Si no tienes ese slot, mueve las dos líneas del CDN a Layout.astro.
+-->
+<Layout
+  title="Reseñas"
+  description={`Lee las ${totalResenas} mejores reseñas de cine y series escritas por nuestro equipo de expertos. Califica y descubre el séptimo arte. Cine-Hub.`}
+>
+  <!--
+    ── CDN: SweetAlert2 ──────────────────────────────────────────────────────
+    Si tu Layout no tiene <slot name="head">, elimina el slot="head"
+    y agrega estas dos líneas directamente en src/layouts/Layout.astro
+    (dentro de <head>, antes de </head>).
+  -->
+  <Fragment slot="head">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/sweetalert2@11"
+      is:inline
+    ></script>
+  </Fragment>
+
+  <Header />
+
+  <main class="pt-[68px]">
+
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <!--  HERO SECTION                                              -->
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <section
+      class="relative w-full h-[58vh] min-h-[400px] flex items-center justify-center overflow-hidden"
+      aria-label="Cabecera de la sección Reseñas"
+    >
+      <!-- Imagen de fondo con fallback a Unsplash -->
+      <img
+        src="/assets/fondo_reseñas.webP"
+        alt="Fondo temático para la sección de reseñas cinematográficas"
+        class="absolute inset-0 w-full h-full object-cover object-center scale-105"
+        loading="eager"
+        onerror="this.src='https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=1600&q=80'; this.onerror=null;"
+      />
+
+      <!-- Capas de oscurecimiento -->
+      <div class="absolute inset-0 bg-[#0a0f1a]/80" />
+      <div class="absolute inset-0 bg-gradient-to-b from-[#0a0f1a]/40 via-transparent to-[#0a0f1a]" />
+      <!-- Vignette lateral para profundidad -->
+      <div class="absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-[#0a0f1a]/70 to-transparent" />
+
+      <!-- Partículas decorativas CSS -->
+      <div class="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        {Array.from({ length: 16 }, (_, i) => (
+          <span
+            class="absolute rounded-full bg-yellow-400/20 animate-pulse-slow"
+            style={`
+              width:  ${1 + (i % 2)}px;
+              height: ${1 + (i % 2)}px;
+              top:    ${10 + (i * 53) % 80}%;
+              left:   ${5 + (i * 43) % 90}%;
+              animation-delay:    ${(i * 0.2) % 3}s;
+              animation-duration: ${2.5 + (i % 3)}s;
+            `}
+          />
+        ))}
+      </div>
+
+      <!-- Contenido del hero -->
+      <div class="relative z-10 text-center px-6 max-w-3xl mx-auto">
+        <!-- Breadcrumb -->
+        <nav aria-label="Breadcrumb" class="flex items-center justify-center gap-2 text-xs text-slate-500 mb-4">
+          <a href="/" class="hover:text-blue-400 transition-colors">Inicio</a>
+          <i class="fa-solid fa-chevron-right text-[8px]" />
+          <span class="text-blue-400">Reseñas</span>
+        </nav>
+
+        <!-- Etiqueta -->
+        <div class="flex items-center justify-center gap-3 mb-4">
+          <span class="w-8 h-[2px] bg-yellow-500 rounded" />
+          <span class="text-yellow-400 font-['Barlow_Condensed'] uppercase tracking-[0.25em] text-xs font-semibold">
+            Opiniones de Expertos
+          </span>
+          <span class="w-8 h-[2px] bg-yellow-500 rounded" />
+        </div>
+
+        <h1 class="font-['Bebas_Neue'] text-6xl sm:text-7xl lg:text-8xl text-white tracking-wide leading-none mb-4">
+          Re<span class="text-yellow-400">señas</span>
+        </h1>
+
+        <p class="text-slate-300 text-base sm:text-lg max-w-xl mx-auto mb-8">
+          Análisis profundos escritos por nuestro equipo. Lee, descubre y
+          <span class="text-yellow-400 font-semibold">comparte tu propia calificación</span>.
+        </p>
+
+        <!-- Stats del hero -->
+        <div class="flex items-center justify-center gap-10">
+          {[
+            {
+              valor: `${promedioGlobal}★`,
+              label: "Promedio global",
+              color: "text-yellow-400",
+            },
+            {
+              valor: String(totalResenas),
+              label: "Reseñas",
+              color: "text-blue-400",
+            },
+            {
+              valor: formatCount(totalVotos),
+              label: "Votos totales",
+              color: "text-green-400",
+            },
+          ].map(({ valor, label, color }) => (
+            <div class="text-center">
+              <p class={`font-['Bebas_Neue'] text-3xl leading-none ${color}`}>{valor}</p>
+              <p class="text-slate-500 text-[10px] uppercase tracking-widest mt-1">{label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <!--  NAVEGACIÓN INTERNA STICKY                                 -->
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <section class="sticky top-[68px] z-40 bg-[#0a0f1a]/90 backdrop-blur-xl border-b border-slate-800/60 shadow-lg shadow-black/30">
+      <div class="max-w-7xl mx-auto px-6 lg:px-12">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 py-4">
+
+          <!-- Texto introductorio -->
+          <p class="text-slate-400 text-sm hidden md:block max-w-md">
+            Nuestro equipo de críticos evalúa cada obra con rigor.
+            <span class="text-white">Tu opinión también cuenta.</span>
+          </p>
+
+          <!-- Botones de anclaje con smooth-scroll -->
+          <nav
+            aria-label="Navegación por tipo de reseña"
+            class="flex items-center gap-2 flex-wrap justify-center"
+          >
+            <!-- Películas -->
+            <a
+              href="#peliculas"
+              class="
+                group inline-flex items-center gap-2 px-4 py-2 rounded-lg
+                border border-slate-700/60 text-slate-300 text-sm font-medium
+                transition-all duration-200
+                hover:bg-blue-600 hover:text-white hover:border-blue-600
+              "
+            >
+              <i class="fa-solid fa-film text-xs opacity-70 group-hover:opacity-100" />
+              Películas
+              <span class="px-1.5 py-0.5 rounded bg-slate-800 group-hover:bg-white/20 text-slate-400 group-hover:text-white text-[10px] font-bold transition-colors">
+                {resenasPeliculas.length}
+              </span>
+            </a>
+
+            <!-- Series -->
+            <a
+              href="#series"
+              class="
+                group inline-flex items-center gap-2 px-4 py-2 rounded-lg
+                border border-slate-700/60 text-slate-300 text-sm font-medium
+                transition-all duration-200
+                hover:bg-purple-600 hover:text-white hover:border-purple-600
+              "
+            >
+              <i class="fa-solid fa-tv text-xs opacity-70 group-hover:opacity-100" />
+              Series
+              <span class="px-1.5 py-0.5 rounded bg-slate-800 group-hover:bg-white/20 text-slate-400 group-hover:text-white text-[10px] font-bold transition-colors">
+                {resenasSeries.length}
+              </span>
+            </a>
+          </nav>
+
+          <!-- Indicador del sistema de rating -->
+          <div class="hidden lg:flex items-center gap-2 text-xs text-slate-500">
+            <i class="fa-solid fa-star text-yellow-400/60" />
+            <span>Sistema de calificación activo</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <!--  BANNER EXPLICATIVO DEL SISTEMA DE CALIFICACIÓN           -->
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <div class="bg-[#060b14] border-b border-slate-800/40 py-4">
+      <div class="max-w-7xl mx-auto px-6 lg:px-12">
+        <div class="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-2xl bg-blue-950/20 border border-blue-800/20">
+          <div class="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-star-half-stroke text-blue-400" />
+          </div>
+          <div class="text-center sm:text-left">
+            <p class="text-white text-sm font-semibold">¿Cómo funciona el sistema de calificaciones?</p>
+            <p class="text-slate-400 text-xs mt-0.5">
+              Cada tarjeta muestra la calificación promedio de nuestra comunidad.
+              Usa las estrellas interactivas para agregar tu propia puntuación del 1 al 5 y pulsa "Calificar".
+            </p>
+          </div>
+          <!-- Ejemplo visual de estrellas -->
+          <div class="flex gap-1 sm:ml-auto flex-shrink-0">
+            {Array.from({ length: 5 }, (_, i) => (
+              <i class={`fa-solid fa-star text-sm ${i < 4 ? "text-yellow-400" : "text-slate-600"}`} />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <!--  SECCIÓN: RESEÑAS DE PELÍCULAS                            -->
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <section
+      id="peliculas"
+      class="py-20 bg-[#0a0f1a] scroll-mt-32"
+      aria-labelledby="heading-peliculas"
+    >
+      <div class="max-w-7xl mx-auto px-6 lg:px-12">
+
+        <!-- Encabezado -->
+        <header class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10 animate-on-scroll">
+          <div>
+            <div class="flex items-center gap-3 mb-2">
+              <div class="w-9 h-9 rounded-lg bg-blue-600/20 border border-blue-500/30 flex items-center justify-center">
+                <i class="fa-solid fa-film text-blue-400 text-sm" />
+              </div>
+              <span class="text-blue-400 font-['Barlow_Condensed'] uppercase tracking-[0.2em] text-xs font-semibold">
+                Análisis Cinematográfico
+              </span>
+            </div>
+            <h2
+              id="heading-peliculas"
+              class="font-['Bebas_Neue'] text-4xl sm:text-5xl text-white tracking-wide"
+            >
+              Reseñas de <span class="text-blue-400">Películas</span>
+            </h2>
+          </div>
+          <a
+            href="/peliculas"
+            class="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-blue-400 transition-colors group shrink-0"
+          >
+            Ver todas las películas
+            <i class="fa-solid fa-arrow-right transition-transform group-hover:translate-x-1" />
+          </a>
+        </header>
+
+        <!-- Separador -->
+        <div class="flex items-center gap-4 mb-10">
+          <div class="h-[1px] flex-1 bg-gradient-to-r from-blue-600/50 to-transparent" />
+          <i class="fa-solid fa-star text-blue-500/50 text-xs" />
+          <div class="h-[1px] w-16 bg-slate-800" />
+        </div>
+
+        <!-- Grid de reseñas de películas -->
+        {resenasPeliculas.length > 0 ? (
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {resenasPeliculas.map((resena, i) => (
+              <div
+                class="animate-on-scroll"
+                style={`animation-delay: ${i * 0.12}s`}
+              >
+                <ReviewCard
+                  id={resena.id}
+                  title={resena.title}
+                  image={resena.image}
+                  comment={resena.comment}
+                  type={resena.type}
+                  averageRating={resena.averageRating}
+                  totalReviews={resena.totalReviews}
+                  director={resena.director}
+                  anio={resena.anio}
+                  genero={resena.genero}
+                />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div class="flex flex-col items-center justify-center py-16 text-center gap-3">
+            <i class="fa-solid fa-film text-slate-700 text-4xl" />
+            <p class="text-slate-500">No hay reseñas de películas disponibles aún.</p>
+          </div>
+        )}
+      </div>
+    </section>
+
+    <!-- Divisor -->
+    <div class="h-px bg-gradient-to-r from-transparent via-slate-700/50 to-transparent mx-12" aria-hidden="true" />
+
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <!--  SECCIÓN: RESEÑAS DE SERIES                               -->
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <section
+      id="series"
+      class="py-20 bg-[#060b14] scroll-mt-32"
+      aria-labelledby="heading-series"
+    >
+      <div class="max-w-7xl mx-auto px-6 lg:px-12">
+
+        <!-- Encabezado -->
+        <header class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10 animate-on-scroll">
+          <div>
+            <div class="flex items-center gap-3 mb-2">
+              <div class="w-9 h-9 rounded-lg bg-purple-600/20 border border-purple-500/30 flex items-center justify-center">
+                <i class="fa-solid fa-tv text-purple-400 text-sm" />
+              </div>
+              <span class="text-purple-400 font-['Barlow_Condensed'] uppercase tracking-[0.2em] text-xs font-semibold">
+                Análisis de Temporadas
+              </span>
+            </div>
+            <h2
+              id="heading-series"
+              class="font-['Bebas_Neue'] text-4xl sm:text-5xl text-white tracking-wide"
+            >
+              Reseñas de <span class="text-purple-400">Series</span>
+            </h2>
+          </div>
+          <a
+            href="/series"
+            class="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-purple-400 transition-colors group shrink-0"
+          >
+            Ver todas las series
+            <i class="fa-solid fa-arrow-right transition-transform group-hover:translate-x-1" />
+          </a>
+        </header>
+
+        <!-- Separador -->
+        <div class="flex items-center gap-4 mb-10">
+          <div class="h-[1px] flex-1 bg-gradient-to-r from-purple-600/40 to-transparent" />
+          <i class="fa-solid fa-star text-purple-500/40 text-xs" />
+          <div class="h-[1px] w-16 bg-slate-800" />
+        </div>
+
+        <!-- Grid de reseñas de series -->
+        {resenasSeries.length > 0 ? (
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {resenasSeries.map((resena, i) => (
+              <div
+                class="animate-on-scroll series-review-card"
+                style={`animation-delay: ${i * 0.12}s`}
+              >
+                <ReviewCard
+                  id={resena.id}
+                  title={resena.title}
+                  image={resena.image}
+                  comment={resena.comment}
+                  type={resena.type}
+                  averageRating={resena.averageRating}
+                  totalReviews={resena.totalReviews}
+                  director={resena.director}
+                  anio={resena.anio}
+                  genero={resena.genero}
+                />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div class="flex flex-col items-center justify-center py-16 text-center gap-3">
+            <i class="fa-solid fa-tv text-slate-700 text-4xl" />
+            <p class="text-slate-500">No hay reseñas de series disponibles aún.</p>
+          </div>
+        )}
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <!--  CTA FINAL — Invitar a explorar más contenido             -->
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <section class="py-16 bg-[#0a0f1a] border-t border-slate-800/60">
+      <div class="max-w-3xl mx-auto px-6 text-center animate-on-scroll">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-yellow-600/10 border border-yellow-500/20 text-yellow-400 text-xs font-semibold uppercase tracking-widest mb-5">
+          <i class="fa-solid fa-star text-[10px]" />
+          ¿Buscas más?
+        </div>
+        <h2 class="font-['Bebas_Neue'] text-4xl sm:text-5xl text-white mb-4">
+          Explora toda nuestra <span class="text-blue-400">colección</span>
+        </h2>
+        <p class="text-slate-400 mb-8 max-w-lg mx-auto">
+          Descubre estrenos, clásicos y próximas novedades tanto en películas como en series.
+        </p>
+        <div class="flex flex-wrap items-center justify-center gap-4">
+          <a
+            href="/peliculas"
+            class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-blue-900/30 hover:-translate-y-0.5"
+          >
+            <i class="fa-solid fa-film" />
+            Ir a Películas
+          </a>
+          <a
+            href="/series"
+            class="inline-flex items-center gap-2 px-6 py-3 border border-slate-600/60 hover:border-purple-500/60 text-slate-300 hover:text-purple-400 font-semibold rounded-xl transition-all duration-200 hover:bg-purple-600/10"
+          >
+            <i class="fa-solid fa-tv" />
+            Ir a Series
+          </a>
+          <a
+            href="/noticias"
+            class="inline-flex items-center gap-2 px-6 py-3 border border-slate-600/60 hover:border-yellow-500/60 text-slate-300 hover:text-yellow-400 font-semibold rounded-xl transition-all duration-200 hover:bg-yellow-600/10"
+          >
+            <i class="fa-solid fa-newspaper" />
+            Noticias
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <Footer />
+</Layout>
+
+<!-- Override visual para las tarjetas de series en esta página -->
+<style>
+  .series-review-card article:hover {
+    border-color: rgba(168, 85, 247, 0.35) !important;
+    box-shadow: 0 20px 60px rgba(126, 34, 206, 0.18);
+  }
+  .series-review-card article:hover h3 {
+    color: #c084fc !important; /* purple-400 */
+  }
+</style>

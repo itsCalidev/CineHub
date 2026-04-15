@@ -1,0 +1,411 @@
+---
+// src/components/ReviewCard.astro
+// Novedad principal: sistema de calificación interactivo con estrellas
+// y SweetAlert2 para el feedback al usuario (sin backend).
+
+export interface Props {
+  id:            number;
+  title:         string;
+  image:         string;
+  comment:       string;
+  type:          "pelicula" | "serie";
+  averageRating: number;      // 1-5, puede ser decimal (ej. 4.5)
+  totalReviews:  number;
+  director?:     string;
+  anio?:         number;
+  genero?:       string[];
+}
+
+const {
+  id,
+  title,
+  image,
+  comment,
+  type,
+  averageRating,
+  totalReviews,
+  director,
+  anio,
+  genero = [],
+} = Astro.props;
+
+// ── Helpers ────────────────────────────────────────────────────────────────
+// Convierte el rating decimal en ancho porcentual para la capa de estrellas doradas
+const ratingPercent = (averageRating / 5) * 100;
+
+// Formatea el total de reseñas (ej. 3847 → "3.8K")
+function formatCount(n: number): string {
+  if (n >= 1000) return `${(n / 1000).toFixed(1)}K`;
+  return String(n);
+}
+
+const typeBadgeClass = type === "pelicula"
+  ? "bg-blue-600/20 text-blue-400 border-blue-500/30"
+  : "bg-purple-600/20 text-purple-400 border-purple-500/30";
+
+const typeBadgeIcon = type === "pelicula"
+  ? "fa-solid fa-film"
+  : "fa-solid fa-tv";
+
+// ID único para los radio inputs (permite múltiples cards en la misma página)
+const radioName = `rating-card-${id}`;
+---
+
+<article
+  class="
+    group flex flex-col rounded-2xl overflow-hidden
+    bg-slate-900 border border-slate-700/50
+    hover:border-blue-500/30
+    transition-all duration-400 ease-out
+    hover:-translate-y-1 hover:shadow-2xl hover:shadow-blue-900/20
+  "
+  data-review-id={id}
+>
+
+  <!-- ── IMAGEN ────────────────────────────────────────────────── -->
+  <div class="relative overflow-hidden aspect-[16/9]">
+    <img
+      src={image}
+      alt={`Imagen de ${title}`}
+      loading="lazy"
+      decoding="async"
+      class="
+        w-full h-full object-cover object-center
+        transition-transform duration-700 ease-out
+        group-hover:scale-105
+      "
+    />
+    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent" />
+
+    <!-- Badges superpuestos -->
+    <div class="absolute top-3 left-3 flex items-center gap-2">
+      <!-- Tipo: Película / Serie -->
+      <span class={`
+        inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full
+        border text-xs font-semibold backdrop-blur-sm
+        ${typeBadgeClass}
+      `}>
+        <i class={`${typeBadgeIcon} text-[10px]`} />
+        {type === "pelicula" ? "Película" : "Serie"}
+      </span>
+    </div>
+
+    <!-- Rating flotante en esquina superior derecha -->
+    <div class="
+      absolute top-3 right-3
+      flex items-center gap-1.5 px-2.5 py-1 rounded-full
+      bg-slate-900/80 backdrop-blur-sm border border-yellow-500/30
+    ">
+      <i class="fa-solid fa-star text-yellow-400 text-xs" />
+      <span class="text-white font-['Bebas_Neue'] text-sm leading-none">
+        {averageRating}
+      </span>
+    </div>
+  </div>
+
+  <!-- ── CONTENIDO ─────────────────────────────────────────────── -->
+  <div class="flex flex-col flex-1 p-5 gap-4">
+
+    <!-- Chips de género -->
+    {genero.length > 0 && (
+      <div class="flex flex-wrap gap-1.5">
+        {genero.slice(0, 3).map((g) => (
+          <span class="
+            px-2 py-0.5 rounded bg-slate-800 text-slate-400
+            text-[10px] font-medium uppercase tracking-wider
+            border border-slate-700/60
+          ">
+            {g}
+          </span>
+        ))}
+      </div>
+    )}
+
+    <!-- Título -->
+    <h3 class="
+      font-['Bebas_Neue'] text-2xl leading-tight tracking-wide
+      text-white group-hover:text-blue-300
+      transition-colors duration-300 line-clamp-1
+    ">
+      {title}
+    </h3>
+
+    <!-- Meta: director · año -->
+    <div class="flex items-center gap-3 text-xs text-slate-500 -mt-1">
+      {director && (
+        <span class="flex items-center gap-1">
+          <i class="fa-solid fa-clapperboard text-blue-500/60 text-[10px]" />
+          {director.split("&")[0].trim()}
+        </span>
+      )}
+      {director && anio && <span class="w-[1px] h-3 bg-slate-700" />}
+      {anio && (
+        <span class="flex items-center gap-1">
+          <i class="fa-solid fa-calendar-days text-blue-500/60 text-[10px]" />
+          {anio}
+        </span>
+      )}
+    </div>
+
+    <!-- Texto de la reseña experta -->
+    <p class="text-slate-400 text-sm leading-relaxed line-clamp-4 flex-1">
+      {comment}
+    </p>
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!--  SECCIÓN DE CALIFICACIÓN PROMEDIO (Solo lectura)        -->
+    <!--  Replica los datos que antes provenían de la BD MySQL.  -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <div class="
+      rounded-xl bg-slate-800/50 border border-slate-700/50
+      p-4 flex items-center gap-4
+    ">
+      <!-- Número grande -->
+      <div class="text-center flex-shrink-0">
+        <p class="font-['Bebas_Neue'] text-4xl text-white leading-none">{averageRating}</p>
+        <p class="text-slate-500 text-[10px] uppercase tracking-widest mt-0.5">de 5</p>
+      </div>
+
+      <!-- Estrellas + conteo -->
+      <div class="flex flex-col gap-1.5 flex-1">
+        <!--
+          Técnica de estrellas con CSS: dos capas superpuestas.
+          Capa base: 5 estrellas grises (vacías).
+          Capa superior: 5 estrellas doradas recortadas al ancho % del rating.
+        -->
+        <div class="relative inline-flex w-fit" aria-label={`Calificación promedio: ${averageRating} de 5`}>
+          <!-- Estrellas de fondo (vacías) -->
+          <div class="flex gap-0.5">
+            {Array.from({ length: 5 }, () => (
+              <i class="fa-solid fa-star text-slate-600 text-base" />
+            ))}
+          </div>
+          <!-- Estrellas doradas (clip por ancho) -->
+          <div
+            class="absolute inset-0 overflow-hidden flex gap-0.5"
+            style={`width: ${ratingPercent}%`}
+          >
+            {Array.from({ length: 5 }, () => (
+              <i class="fa-solid fa-star text-yellow-400 text-base flex-shrink-0" />
+            ))}
+          </div>
+        </div>
+
+        <p class="text-slate-500 text-xs">
+          Basado en
+          <span class="text-slate-300 font-semibold">{formatCount(totalReviews)}</span>
+          {totalReviews === 1 ? " calificación" : " calificaciones"}
+        </p>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!--  SECCIÓN INTERACTIVA: TU CALIFICACIÓN                   -->
+    <!--  Simulación del sistema de votos del PHP original.      -->
+    <!--  Inputs radio estilizados como estrellas con Tailwind.  -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <div class="rounded-xl bg-blue-950/20 border border-blue-800/30 p-4">
+      <p class="text-slate-400 text-xs uppercase tracking-widest font-semibold mb-3 flex items-center gap-2">
+        <i class="fa-regular fa-star text-blue-400" />
+        Tu calificación
+      </p>
+
+      <!--
+        Sistema de estrellas con radio inputs puros.
+        Truco CSS clásico: los inputs están ordenados de 5→1 en el DOM (flex-row-reverse),
+        así el selector ~ funciona hacia "la derecha visual" = estrellas a la izquierda.
+        Al hover/checked se iluminan la estrella actual y todas las anteriores.
+      -->
+      <div
+        class="star-rating-wrapper flex items-center justify-center gap-1 mb-3"
+        role="radiogroup"
+        aria-label={`Califica ${title}`}
+      >
+        {[5, 4, 3, 2, 1].map((val) => (
+          <>
+            <input
+              type="radio"
+              id={`${radioName}-${val}`}
+              name={radioName}
+              value={val}
+              class="sr-only peer"
+              aria-label={`${val} estrellas`}
+            />
+            <label
+              for={`${radioName}-${val}`}
+              class="
+                star-label
+                cursor-pointer text-2xl
+                text-slate-600
+                transition-all duration-150
+                hover:text-yellow-400 hover:scale-110
+                peer-checked:text-yellow-400
+              "
+              aria-hidden="true"
+            >
+              <i class="fa-solid fa-star" />
+            </label>
+          </>
+        ))}
+      </div>
+
+      <!-- Botón calificar -->
+      <button
+        type="button"
+        class="
+          rate-btn w-full flex items-center justify-center gap-2
+          py-2.5 px-4 rounded-xl
+          bg-blue-600/10 hover:bg-blue-600
+          border border-blue-500/30 hover:border-blue-500
+          text-blue-400 hover:text-white
+          text-sm font-semibold
+          transition-all duration-250
+          active:scale-95
+          disabled:opacity-40 disabled:cursor-not-allowed
+          group/btn
+        "
+        data-title={title}
+      >
+        <i class="fa-solid fa-paper-plane text-sm transition-transform duration-200 group-hover/btn:-rotate-12" />
+        Calificar
+      </button>
+    </div>
+
+  </div><!-- /contenido -->
+</article>
+
+<!--
+  Estilos scopeados para el sistema de estrellas radio.
+  El truco flex-row-reverse + el selector hermano ~ no funciona
+  de forma nativa con Tailwind; necesitamos CSS scopeado.
+-->
+<style>
+  /* Invierte el orden visual de las estrellas */
+  .star-rating-wrapper {
+    flex-direction: row-reverse;
+  }
+
+  /*
+    Cuando una estrella está marcada (checked):
+    colorea TODAS las hermanas que la preceden en el DOM
+    (que en flex-row-reverse = las que están a la izquierda visualmente)
+  */
+  .star-rating-wrapper input:checked ~ label .fa-star,
+  .star-rating-wrapper label:hover .fa-star,
+  .star-rating-wrapper label:hover ~ label .fa-star {
+    color: #facc15; /* yellow-400 */
+  }
+
+  /* Reset cuando el mouse sale del grupo sin seleccionar nada */
+  .star-rating-wrapper:not(:has(input:checked)) label:not(:hover) ~ label .fa-star,
+  .star-rating-wrapper:not(:has(input:checked)) label:not(:hover) .fa-star {
+    color: #475569; /* slate-600 */
+  }
+
+  /* Escala al hover individual */
+  .star-label:hover {
+    transform: scale(1.15);
+  }
+</style>
+
+<script>
+  // Buscamos SOLO el botón del article más cercano a este script
+  // (cada componente instanciado tiene su propio scope de script en Astro
+  //  gracias a que los scripts se deduplicarán en el bundle).
+  // Usamos `document.querySelectorAll` y un dataset para diferenciar.
+
+  document.querySelectorAll<HTMLButtonElement>(".rate-btn").forEach((btn) => {
+    // Evitar registrar el mismo listener dos veces si hay hydration doble
+    if ((btn as any).__rateListenerAttached) return;
+    (btn as any).__rateListenerAttached = true;
+
+    btn.addEventListener("click", () => {
+      // Encontrar el article padre de este botón
+      const card = btn.closest("article[data-review-id]") as HTMLElement | null;
+      if (!card) return;
+
+      // Obtener la estrella seleccionada
+      const reviewId = card.dataset.reviewId;
+      const checkedInput = card.querySelector<HTMLInputElement>(
+        `input[name^="rating-card-${reviewId}"]:checked`
+      );
+
+      if (!checkedInput) {
+        // No seleccionó ninguna estrella → aviso suave
+        // @ts-ignore — SweetAlert2 cargado via CDN en el Layout
+        Swal.fire({
+          icon:             "warning",
+          title:            "Selecciona una calificación",
+          text:             "Por favor, elige entre 1 y 5 estrellas antes de calificar.",
+          background:       "#0f172a",
+          color:            "#e2e8f0",
+          confirmButtonColor: "#2563eb",
+          confirmButtonText:  "Entendido",
+          iconColor:        "#f59e0b",
+          customClass: {
+            popup:          "rounded-2xl border border-slate-700/60 shadow-2xl",
+            title:          "text-lg font-bold",
+          },
+        });
+        return;
+      }
+
+      const stars    = parseInt(checkedInput.value, 10);
+      const movieTitle = btn.dataset.title ?? "esta obra";
+      const starLabel  = stars === 1 ? "estrella" : "estrellas";
+
+      // Construir los iconos de estrellas para mostrar en la alerta
+      const starsHtml = Array.from({ length: 5 }, (_, i) =>
+        `<i class="fa-solid fa-star" style="color:${i < stars ? "#facc15" : "#334155"}; font-size:1.4rem; margin:0 2px"></i>`
+      ).join("");
+
+      // @ts-ignore — SweetAlert2 cargado via CDN
+      Swal.fire({
+        icon:             "success",
+        title:            "¡Calificación enviada!",
+        html: `
+          <p style="color:#94a3b8; margin-bottom:12px; font-size:0.9rem">
+            Le diste <strong style="color:#fff">${stars} ${starLabel}</strong> a
+            <strong style="color:#60a5fa">${movieTitle}</strong>
+          </p>
+          <div style="margin:8px 0 4px">${starsHtml}</div>
+          <p style="color:#64748b; font-size:0.75rem; margin-top:12px">
+            Tu opinión ha sido registrada correctamente.
+          </p>
+        `,
+        background:       "#0f172a",
+        color:            "#e2e8f0",
+        confirmButtonColor: "#2563eb",
+        confirmButtonText:  "¡Genial!",
+        iconColor:        "#22c55e",
+        customClass: {
+          popup:          "rounded-2xl border border-slate-700/60 shadow-2xl shadow-black/60",
+          title:          "text-xl font-bold",
+          confirmButton:  "rounded-xl font-semibold px-8",
+        },
+        showClass: {
+          popup: "animate__animated animate__fadeInDown animate__faster",
+        },
+        hideClass: {
+          popup: "animate__animated animate__fadeOutUp animate__faster",
+        },
+      });
+
+      // Feedback visual en el botón tras calificar
+      btn.innerHTML = `
+        <i class="fa-solid fa-circle-check text-sm"></i>
+        ¡Calificado!
+      `;
+      btn.classList.remove(
+        "bg-blue-600/10", "hover:bg-blue-600",
+        "border-blue-500/30", "hover:border-blue-500",
+        "text-blue-400", "hover:text-white"
+      );
+      btn.classList.add(
+        "bg-green-600/10", "border-green-500/30",
+        "text-green-400", "cursor-default"
+      );
+      btn.disabled = true;
+    });
+  });
+</script>
