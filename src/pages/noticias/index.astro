@@ -1,0 +1,449 @@
+---
+// src/pages/noticias/index.astro
+
+
+import Layout      from "../../layouts/Layout.astro";
+import Header      from "../../components/Header.astro";
+import Footer      from "../../components/Footer.astro";
+import NoticiaCard from "../../components/NewsCard.astro";
+
+import rawNoticias from "../../data/news/news.json";
+
+interface Noticia {
+  id:           number;
+  titulo:       string;
+  imagen:       string;
+  comentario:   string;
+  fuente:       string;
+  link_noticia: string;
+  link_video?:  string;
+  fecha?:       string;
+  categoria?:   string;
+}
+
+const noticias = rawNoticias as Noticia[];
+
+
+const noticiasOrdenadas = [...noticias].sort((a, b) => {
+  if (!a.fecha && !b.fecha) return 0;
+  if (!a.fecha) return 1;
+  if (!b.fecha) return -1;
+  return b.fecha.localeCompare(a.fecha);
+});
+
+const total         = noticiasOrdenadas.length;
+const conVideo      = noticiasOrdenadas.filter(n => n.link_video?.trim()).length;
+const categorias    = [...new Set(noticiasOrdenadas.map(n => n.categoria).filter(Boolean))];
+const noticiaMasReciente = noticiasOrdenadas[0];
+
+const fuentes = [...new Set(noticiasOrdenadas.map(n => n.fuente))];
+---
+
+<Layout
+  title="Noticias"
+  description={`Las últimas ${total} noticias de la industria cinematográfica. Estrenos, festivales, casting y más. Cine-Hub.`}
+>
+  <Header />
+
+  <main class="pt-[68px]">
+
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <!--  HERO SECTION                                              -->
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <section
+      class="relative w-full h-[58vh] min-h-[400px] flex items-center justify-center overflow-hidden"
+      aria-label="Cabecera de la sección Noticias"
+    >
+      <img
+        src="/assets/imagen-prueba-noticias.webp"
+        alt="Fondo de la sección de noticias cinematográficas"
+        class="absolute inset-0 w-full h-full object-cover object-center scale-105"
+        loading="eager"
+        onerror="this.src='https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1600&q=80'; this.onerror=null;"
+      />
+
+      <div class="absolute inset-0 bg-[#0a0f1a]/82" />
+      <div class="absolute inset-0 bg-gradient-to-b from-[#0a0f1a]/50 via-transparent to-[#0a0f1a]" />
+      <div class="absolute inset-0 bg-gradient-to-r from-[#0a0f1a]/60 via-transparent to-transparent" />
+
+      <!-- Partículas CSS -->
+      <div class="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        {Array.from({ length: 14 }, (_, i) => (
+          <span
+            class="absolute rounded-full bg-cyan-400/25 animate-pulse-slow"
+            style={`
+              width:  ${1 + (i % 2)}px;
+              height: ${1 + (i % 2)}px;
+              top:    ${10 + (i * 55) % 82}%;
+              left:   ${6 + (i * 43) % 88}%;
+              animation-delay:    ${(i * 0.22) % 3}s;
+              animation-duration: ${2 + (i % 3)}s;
+            `}
+          />
+        ))}
+      </div>
+
+      <!-- Contenido -->
+      <div class="relative z-10 text-center px-6 max-w-3xl mx-auto">
+        <!-- Breadcrumb -->
+        <nav aria-label="Breadcrumb" class="flex items-center justify-center gap-2 text-xs text-slate-500 mb-4">
+          <a href="/" class="hover:text-blue-400 transition-colors">Inicio</a>
+          <i class="fa-solid fa-chevron-right text-[8px]" />
+          <span class="text-blue-400">Noticias</span>
+        </nav>
+
+        <!-- Etiqueta -->
+        <div class="flex items-center justify-center gap-3 mb-4">
+          <span class="w-8 h-[2px] bg-cyan-500 rounded" />
+          <span class="text-cyan-400 font-['Barlow_Condensed'] uppercase tracking-[0.25em] text-xs font-semibold">
+            Industria Cinematográfica
+          </span>
+          <span class="w-8 h-[2px] bg-cyan-500 rounded" />
+        </div>
+
+        <h1 class="font-['Bebas_Neue'] text-6xl sm:text-7xl lg:text-8xl text-white tracking-wide leading-none mb-4">
+          Noti<span class="text-cyan-400">cias</span>
+        </h1>
+
+        <p class="text-slate-300 text-base sm:text-lg max-w-xl mx-auto mb-8">
+          Estamos conectados con las fuentes más influyentes del cine.
+          <span class="text-cyan-400 font-semibold">{total} noticias</span> actualizadas para ti.
+        </p>
+
+        <!-- Stats del hero -->
+        <div class="flex items-center justify-center gap-10">
+          {[
+            { valor: String(total),         label: "Noticias",  dot: "bg-cyan-400"  },
+            { valor: String(conVideo),       label: "Con video", dot: "bg-red-400"   },
+            { valor: String(fuentes.length), label: "Fuentes",   dot: "bg-blue-400"  },
+          ].map(({ valor, label, dot }) => (
+            <div class="text-center flex flex-col items-center gap-1">
+              <span class={`w-1.5 h-1.5 rounded-full ${dot}`} />
+              <p class="font-['Bebas_Neue'] text-3xl text-white leading-none">{valor}</p>
+              <p class="text-slate-500 text-[10px] uppercase tracking-widest">{label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <!--  TICKER DE FUENTES (barra animada con los medios)          -->
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <div
+      class="bg-blue-600/10 border-y border-blue-500/20 py-2 overflow-hidden"
+      aria-label="Fuentes de información"
+    >
+      <div class="ticker-wrapper flex items-center gap-8 whitespace-nowrap w-max animate-[ticker_20s_linear_infinite]">
+        {/* Duplicamos para el loop continuo */}
+        {[...fuentes, ...fuentes].map((f, i) => (
+          <span class="inline-flex items-center gap-2 text-slate-400 text-xs font-medium px-2">
+            <i class="fa-solid fa-newspaper text-blue-400/60 text-[10px]" />
+            {f}
+          </span>
+        ))}
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <!--  SECCIÓN DE INTRODUCCIÓN                                   -->
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <section class="py-16 bg-[#060b14]" aria-label="Introducción a la sección de noticias">
+      <div class="max-w-7xl mx-auto px-6 lg:px-12">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+
+          <!-- Texto de bienvenida -->
+          <div class="animate-on-scroll">
+            <div class="flex items-center gap-3 mb-4">
+              <span class="w-8 h-[2px] bg-cyan-500 rounded" />
+              <span class="text-cyan-400 font-['Barlow_Condensed'] uppercase tracking-[0.2em] text-xs font-semibold">
+                Al día con el cine
+              </span>
+            </div>
+            <h2 class="font-['Bebas_Neue'] text-4xl sm:text-5xl text-white leading-tight mb-5">
+              Todo lo que pasa en
+              <span class="block text-cyan-400">la gran pantalla</span>
+            </h2>
+            <p class="text-slate-300 leading-relaxed mb-4">
+              Desde las salas de rodaje hasta las alfombras rojas, en Cine-Hub seguimos de cerca cada
+              movimiento de la industria. Nuestro equipo monitorea las publicaciones más influyentes
+              del sector para traerte lo más relevante, filtrado y resumido.
+            </p>
+            <p class="text-slate-400 text-sm leading-relaxed">
+              Cada noticia incluye su fuente original para que puedas ampliar la información
+              directamente en el medio de referencia. La transparencia es parte de nuestra identidad.
+            </p>
+          </div>
+
+          <!-- Noticia destacada (la más reciente) -->
+          <div class="animate-on-scroll">
+            <p class="text-slate-500 text-xs uppercase tracking-widest font-semibold mb-3 flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+              Última noticia
+            </p>
+            <div class="rounded-2xl overflow-hidden border border-slate-700/60 bg-slate-900/80 hover:border-cyan-500/30 transition-all duration-300 group">
+              <div class="relative aspect-video overflow-hidden">
+                <img
+                  src={noticiaMasReciente.imagen}
+                  alt={noticiaMasReciente.titulo}
+                  loading="lazy"
+                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 to-transparent" />
+                {noticiaMasReciente.categoria && (
+                  <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-cyan-600/80 text-white text-[10px] font-semibold uppercase tracking-wide backdrop-blur-sm border border-cyan-400/30">
+                    {noticiaMasReciente.categoria}
+                  </span>
+                )}
+              </div>
+              <div class="p-5">
+                <p class="text-cyan-400 text-xs italic mb-2 flex items-center gap-1.5">
+                  <i class="fa-solid fa-newspaper text-[10px] not-italic" />
+                  Fuente: <span class="font-semibold not-italic">{noticiaMasReciente.fuente}</span>
+                </p>
+                <h3 class="font-['Barlow_Condensed'] font-semibold text-lg text-white line-clamp-2 mb-3 group-hover:text-cyan-300 transition-colors">
+                  {noticiaMasReciente.titulo}
+                </h3>
+                <a
+                  href={noticiaMasReciente.link_noticia}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-2 text-sm text-cyan-400 hover:text-cyan-300 font-semibold transition-colors group/lnk"
+                >
+                  Leer completo
+                  <i class="fa-solid fa-arrow-right transition-transform group-hover/lnk:translate-x-1" />
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <!--  FILTROS DE CATEGORÍA (UI estática — extensible con JS)    -->
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <div class="sticky top-[68px] z-40 bg-[#0a0f1a]/90 backdrop-blur-xl border-b border-slate-800/60 shadow-lg shadow-black/30">
+      <div class="max-w-7xl mx-auto px-6 lg:px-12">
+        <div class="flex items-center justify-between gap-4 py-3 overflow-x-auto scrollbar-hide">
+
+          <!-- Categorías como pills -->
+          <div class="flex items-center gap-2 flex-nowrap">
+            <button class="flex-shrink-0 px-3 py-1.5 rounded-lg bg-cyan-600 text-white text-xs font-semibold border border-cyan-500 transition-all">
+              Todas
+            </button>
+            {categorias.map((cat) => (
+              <button class="flex-shrink-0 px-3 py-1.5 rounded-lg bg-slate-800/60 text-slate-400 hover:text-white hover:bg-slate-700 text-xs font-medium border border-slate-700/50 hover:border-slate-500 transition-all duration-200">
+                {cat}
+              </button>
+            ))}
+          </div>
+
+          <!-- Indicador de total -->
+          <p class="text-slate-500 text-xs flex-shrink-0 hidden sm:block">
+            <span class="text-white font-medium">{total}</span> noticias
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <!--  GRID DE NOTICIAS                                          -->
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <section
+      id="noticias-grid"
+      class="py-20 bg-[#0a0f1a]"
+      aria-label="Listado de noticias"
+    >
+      <div class="max-w-7xl mx-auto px-6 lg:px-12">
+
+        <!-- Encabezado de la sección -->
+        <header class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10 animate-on-scroll">
+          <div>
+            <div class="flex items-center gap-3 mb-2">
+              <div class="w-9 h-9 rounded-lg bg-cyan-600/20 border border-cyan-500/30 flex items-center justify-center">
+                <i class="fa-solid fa-bolt text-cyan-400 text-sm" />
+              </div>
+              <span class="text-cyan-400 font-['Barlow_Condensed'] uppercase tracking-[0.2em] text-xs font-semibold">
+                Ordenadas por fecha
+              </span>
+            </div>
+            <h2 class="font-['Bebas_Neue'] text-4xl sm:text-5xl text-white tracking-wide">
+              Últimas <span class="text-cyan-400">Noticias</span>
+            </h2>
+          </div>
+
+          <!-- Leyenda de botones -->
+          <div class="hidden md:flex items-center gap-4 text-xs text-slate-500 pb-1">
+            <span class="flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-blue-500/50 border border-blue-400/40" />
+              Leer noticia
+            </span>
+            <span class="flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-red-500/50 border border-red-400/40" />
+              Con video
+            </span>
+          </div>
+        </header>
+
+        <!-- Separador decorativo -->
+        <div class="flex items-center gap-4 mb-10">
+          <div class="h-[1px] flex-1 bg-gradient-to-r from-cyan-600/50 to-transparent" />
+          <i class="fa-solid fa-star text-cyan-500/50 text-xs" />
+          <div class="h-[1px] w-16 bg-slate-800" />
+        </div>
+
+        <!-- Grid responsivo -->
+        {noticiasOrdenadas.length > 0 ? (
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            {noticiasOrdenadas.map((noticia, i) => (
+              <div
+                class="animate-on-scroll"
+                style={`animation-delay: ${i * 0.1}s`}
+              >
+                <NoticiaCard
+                  id={noticia.id}
+                  titulo={noticia.titulo}
+                  imagen={noticia.imagen}
+                  comentario={noticia.comentario}
+                  fuente={noticia.fuente}
+                  link_noticia={noticia.link_noticia}
+                  link_video={noticia.link_video}
+                  fecha={noticia.fecha}
+                  categoria={noticia.categoria}
+                />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div class="flex flex-col items-center justify-center py-20 gap-4">
+            <i class="fa-solid fa-newspaper text-slate-700 text-5xl" />
+            <p class="text-slate-500 text-lg">No hay noticias disponibles por el momento.</p>
+          </div>
+        )}
+
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <!--  BANNER: FUENTES Y NEWSLETTER                              -->
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <section class="py-16 bg-[#060b14] border-t border-slate-800/60">
+      <div class="max-w-7xl mx-auto px-6 lg:px-12">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+
+          <!-- Fuentes referenciadas -->
+          <div class="animate-on-scroll">
+            <p class="text-slate-500 text-xs uppercase tracking-widest font-semibold mb-4 flex items-center gap-2">
+              <i class="fa-solid fa-shield-halved text-blue-400/60" />
+              Fuentes verificadas
+            </p>
+            <div class="flex flex-wrap gap-2">
+              {fuentes.map((f) => (
+                <span class="
+                  px-3 py-1.5 rounded-lg
+                  bg-slate-800/60 border border-slate-700/50
+                  text-slate-300 text-xs font-medium
+                  hover:border-cyan-500/40 hover:text-cyan-300
+                  transition-colors duration-200
+                ">
+                  {f}
+                </span>
+              ))}
+            </div>
+            <p class="text-slate-600 text-xs mt-4">
+              Toda la información proviene de medios especializados en la industria del entretenimiento.
+            </p>
+          </div>
+
+          <!-- CTA Newsletter simulado -->
+          <div class="animate-on-scroll">
+            <div class="rounded-2xl bg-gradient-to-br from-cyan-950/40 to-blue-950/20 border border-cyan-800/30 p-6">
+              <div class="flex items-center gap-3 mb-3">
+                <div class="w-10 h-10 rounded-xl bg-cyan-600/20 border border-cyan-500/30 flex items-center justify-center">
+                  <i class="fa-solid fa-bell text-cyan-400" />
+                </div>
+                <div>
+                  <h3 class="font-['Bebas_Neue'] text-xl text-white tracking-wide">
+                    ¿No quieres perderte nada?
+                  </h3>
+                  <p class="text-slate-500 text-xs">Activa las notificaciones del sitio</p>
+                </div>
+              </div>
+              <p class="text-slate-400 text-sm leading-relaxed mb-5">
+                Sigue nuestras redes sociales para recibir las últimas noticias del cine directamente en tu feed.
+              </p>
+              <div class="flex items-center gap-3">
+                {[
+                  { icon: "fa-brands fa-twitter",   label: "Twitter",   href: "#", color: "hover:bg-blue-500"   },
+                  { icon: "fa-brands fa-instagram",  label: "Instagram", href: "https://www.instagram.com/equipocinehub/", color: "hover:bg-pink-600"   },
+                  { icon: "fa-brands fa-youtube",    label: "YouTube",   href: "#", color: "hover:bg-red-600"    },
+                ].map(({ icon, label, href, color }) => (
+                  <a
+                    href={href}
+                    aria-label={label}
+                    class={`
+                      flex-1 flex items-center justify-center gap-2
+                      py-2.5 rounded-xl
+                      bg-slate-800 border border-slate-700/60
+                      text-slate-400 hover:text-white
+                      text-sm font-medium
+                      transition-all duration-200
+                      ${color}
+                    `}
+                  >
+                    <i class={`${icon} text-base`} />
+                    <span class="hidden sm:inline text-xs">{label}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <!--  CTA FINAL                                                 -->
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <section class="py-14 bg-[#0a0f1a] border-t border-slate-800/60">
+      <div class="max-w-3xl mx-auto px-6 text-center animate-on-scroll">
+        <h2 class="font-['Bebas_Neue'] text-4xl sm:text-5xl text-white mb-4">
+          ¿Quieres opiniones en <span class="text-cyan-400">profundidad?</span>
+        </h2>
+        <p class="text-slate-400 mb-7">Lee nuestras reseñas y análisis detallados de las películas que marcan tendencia.</p>
+        <div class="flex flex-wrap items-center justify-center gap-4">
+          <a
+            href="/resenas"
+            class="inline-flex items-center gap-2 px-6 py-3 bg-cyan-600 hover:bg-cyan-500 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-cyan-900/30 hover:-translate-y-0.5"
+          >
+            <i class="fa-solid fa-star-half-stroke" />
+            Leer Reseñas
+          </a>
+          <a
+            href="/peliculas"
+            class="inline-flex items-center gap-2 px-6 py-3 border border-slate-600/60 hover:border-blue-500/60 text-slate-300 hover:text-blue-400 font-semibold rounded-xl transition-all duration-200 hover:bg-blue-600/10"
+          >
+            <i class="fa-solid fa-film" />
+            Ver Películas
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  /* Ticker infinito de fuentes */
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  /* Ocultar scrollbar en los pills de categoría */
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+</style>

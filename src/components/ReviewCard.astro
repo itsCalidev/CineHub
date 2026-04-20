@@ -1,7 +1,5 @@
 ---
 // src/components/ReviewCard.astro
-// Novedad principal: sistema de calificación interactivo con estrellas
-// y SweetAlert2 para el feedback al usuario (sin backend).
 
 export interface Props {
   id:            number;
@@ -9,7 +7,7 @@ export interface Props {
   image:         string;
   comment:       string;
   type:          "pelicula" | "serie";
-  averageRating: number;      // 1-5, puede ser decimal (ej. 4.5)
+  averageRating: number;
   totalReviews:  number;
   director?:     string;
   anio?:         number;
@@ -29,11 +27,8 @@ const {
   genero = [],
 } = Astro.props;
 
-// ── Helpers ────────────────────────────────────────────────────────────────
-// Convierte el rating decimal en ancho porcentual para la capa de estrellas doradas
 const ratingPercent = (averageRating / 5) * 100;
 
-// Formatea el total de reseñas (ej. 3847 → "3.8K")
 function formatCount(n: number): string {
   if (n >= 1000) return `${(n / 1000).toFixed(1)}K`;
   return String(n);
@@ -47,7 +42,6 @@ const typeBadgeIcon = type === "pelicula"
   ? "fa-solid fa-film"
   : "fa-solid fa-tv";
 
-// ID único para los radio inputs (permite múltiples cards en la misma página)
 const radioName = `rating-card-${id}`;
 ---
 
@@ -62,7 +56,6 @@ const radioName = `rating-card-${id}`;
   data-review-id={id}
 >
 
-  <!-- ── IMAGEN ────────────────────────────────────────────────── -->
   <div class="relative overflow-hidden aspect-[16/9]">
     <img
       src={image}
@@ -77,9 +70,7 @@ const radioName = `rating-card-${id}`;
     />
     <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent" />
 
-    <!-- Badges superpuestos -->
     <div class="absolute top-3 left-3 flex items-center gap-2">
-      <!-- Tipo: Película / Serie -->
       <span class={`
         inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full
         border text-xs font-semibold backdrop-blur-sm
@@ -90,7 +81,6 @@ const radioName = `rating-card-${id}`;
       </span>
     </div>
 
-    <!-- Rating flotante en esquina superior derecha -->
     <div class="
       absolute top-3 right-3
       flex items-center gap-1.5 px-2.5 py-1 rounded-full
@@ -103,10 +93,8 @@ const radioName = `rating-card-${id}`;
     </div>
   </div>
 
-  <!-- ── CONTENIDO ─────────────────────────────────────────────── -->
   <div class="flex flex-col flex-1 p-5 gap-4">
 
-    <!-- Chips de género -->
     {genero.length > 0 && (
       <div class="flex flex-wrap gap-1.5">
         {genero.slice(0, 3).map((g) => (
@@ -121,7 +109,6 @@ const radioName = `rating-card-${id}`;
       </div>
     )}
 
-    <!-- Título -->
     <h3 class="
       font-['Bebas_Neue'] text-2xl leading-tight tracking-wide
       text-white group-hover:text-blue-300
@@ -130,7 +117,6 @@ const radioName = `rating-card-${id}`;
       {title}
     </h3>
 
-    <!-- Meta: director · año -->
     <div class="flex items-center gap-3 text-xs text-slate-500 -mt-1">
       {director && (
         <span class="flex items-center gap-1">
@@ -147,40 +133,27 @@ const radioName = `rating-card-${id}`;
       )}
     </div>
 
-    <!-- Texto de la reseña experta -->
     <p class="text-slate-400 text-sm leading-relaxed line-clamp-4 flex-1">
       {comment}
     </p>
 
-    <!-- ═══════════════════════════════════════════════════════ -->
-    <!--  SECCIÓN DE CALIFICACIÓN PROMEDIO (Solo lectura)        -->
-    <!--  Replica los datos que antes provenían de la BD MySQL.  -->
-    <!-- ═══════════════════════════════════════════════════════ -->
     <div class="
       rounded-xl bg-slate-800/50 border border-slate-700/50
       p-4 flex items-center gap-4
     ">
-      <!-- Número grande -->
       <div class="text-center flex-shrink-0">
         <p class="font-['Bebas_Neue'] text-4xl text-white leading-none">{averageRating}</p>
         <p class="text-slate-500 text-[10px] uppercase tracking-widest mt-0.5">de 5</p>
       </div>
 
-      <!-- Estrellas + conteo -->
       <div class="flex flex-col gap-1.5 flex-1">
-        <!--
-          Técnica de estrellas con CSS: dos capas superpuestas.
-          Capa base: 5 estrellas grises (vacías).
-          Capa superior: 5 estrellas doradas recortadas al ancho % del rating.
-        -->
+
         <div class="relative inline-flex w-fit" aria-label={`Calificación promedio: ${averageRating} de 5`}>
-          <!-- Estrellas de fondo (vacías) -->
           <div class="flex gap-0.5">
             {Array.from({ length: 5 }, () => (
               <i class="fa-solid fa-star text-slate-600 text-base" />
             ))}
           </div>
-          <!-- Estrellas doradas (clip por ancho) -->
           <div
             class="absolute inset-0 overflow-hidden flex gap-0.5"
             style={`width: ${ratingPercent}%`}
@@ -199,23 +172,12 @@ const radioName = `rating-card-${id}`;
       </div>
     </div>
 
-    <!-- ═══════════════════════════════════════════════════════ -->
-    <!--  SECCIÓN INTERACTIVA: TU CALIFICACIÓN                   -->
-    <!--  Simulación del sistema de votos del PHP original.      -->
-    <!--  Inputs radio estilizados como estrellas con Tailwind.  -->
-    <!-- ═══════════════════════════════════════════════════════ -->
     <div class="rounded-xl bg-blue-950/20 border border-blue-800/30 p-4">
       <p class="text-slate-400 text-xs uppercase tracking-widest font-semibold mb-3 flex items-center gap-2">
         <i class="fa-regular fa-star text-blue-400" />
         Tu calificación
       </p>
 
-      <!--
-        Sistema de estrellas con radio inputs puros.
-        Truco CSS clásico: los inputs están ordenados de 5→1 en el DOM (flex-row-reverse),
-        así el selector ~ funciona hacia "la derecha visual" = estrellas a la izquierda.
-        Al hover/checked se iluminan la estrella actual y todas las anteriores.
-      -->
       <div
         class="star-rating-wrapper flex items-center justify-center gap-1 mb-3"
         role="radiogroup"
@@ -249,7 +211,6 @@ const radioName = `rating-card-${id}`;
         ))}
       </div>
 
-      <!-- Botón calificar -->
       <button
         type="button"
         class="
@@ -271,67 +232,45 @@ const radioName = `rating-card-${id}`;
       </button>
     </div>
 
-  </div><!-- /contenido -->
+  </div>
 </article>
 
-<!--
-  Estilos scopeados para el sistema de estrellas radio.
-  El truco flex-row-reverse + el selector hermano ~ no funciona
-  de forma nativa con Tailwind; necesitamos CSS scopeado.
--->
 <style>
-  /* Invierte el orden visual de las estrellas */
   .star-rating-wrapper {
     flex-direction: row-reverse;
   }
-
-  /*
-    Cuando una estrella está marcada (checked):
-    colorea TODAS las hermanas que la preceden en el DOM
-    (que en flex-row-reverse = las que están a la izquierda visualmente)
-  */
   .star-rating-wrapper input:checked ~ label .fa-star,
   .star-rating-wrapper label:hover .fa-star,
   .star-rating-wrapper label:hover ~ label .fa-star {
     color: #facc15; /* yellow-400 */
   }
 
-  /* Reset cuando el mouse sale del grupo sin seleccionar nada */
   .star-rating-wrapper:not(:has(input:checked)) label:not(:hover) ~ label .fa-star,
   .star-rating-wrapper:not(:has(input:checked)) label:not(:hover) .fa-star {
     color: #475569; /* slate-600 */
   }
 
-  /* Escala al hover individual */
   .star-label:hover {
     transform: scale(1.15);
   }
 </style>
 
 <script>
-  // Buscamos SOLO el botón del article más cercano a este script
-  // (cada componente instanciado tiene su propio scope de script en Astro
-  //  gracias a que los scripts se deduplicarán en el bundle).
-  // Usamos `document.querySelectorAll` y un dataset para diferenciar.
 
   document.querySelectorAll<HTMLButtonElement>(".rate-btn").forEach((btn) => {
-    // Evitar registrar el mismo listener dos veces si hay hydration doble
     if ((btn as any).__rateListenerAttached) return;
     (btn as any).__rateListenerAttached = true;
 
     btn.addEventListener("click", () => {
-      // Encontrar el article padre de este botón
       const card = btn.closest("article[data-review-id]") as HTMLElement | null;
       if (!card) return;
 
-      // Obtener la estrella seleccionada
       const reviewId = card.dataset.reviewId;
       const checkedInput = card.querySelector<HTMLInputElement>(
         `input[name^="rating-card-${reviewId}"]:checked`
       );
 
       if (!checkedInput) {
-        // No seleccionó ninguna estrella → aviso suave
         // @ts-ignore — SweetAlert2 cargado via CDN en el Layout
         Swal.fire({
           icon:             "warning",
@@ -354,7 +293,6 @@ const radioName = `rating-card-${id}`;
       const movieTitle = btn.dataset.title ?? "esta obra";
       const starLabel  = stars === 1 ? "estrella" : "estrellas";
 
-      // Construir los iconos de estrellas para mostrar en la alerta
       const starsHtml = Array.from({ length: 5 }, (_, i) =>
         `<i class="fa-solid fa-star" style="color:${i < stars ? "#facc15" : "#334155"}; font-size:1.4rem; margin:0 2px"></i>`
       ).join("");
@@ -391,7 +329,6 @@ const radioName = `rating-card-${id}`;
         },
       });
 
-      // Feedback visual en el botón tras calificar
       btn.innerHTML = `
         <i class="fa-solid fa-circle-check text-sm"></i>
         ¡Calificado!

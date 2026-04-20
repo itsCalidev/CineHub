@@ -18,11 +18,9 @@ const footerLinks = {
 ---
 
 <footer class="bg-[#060b14] border-t border-slate-800/60">
-  <!-- Main footer content -->
   <div class="max-w-7xl mx-auto px-6 lg:px-12 py-16">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
 
-      <!-- Brand column -->
       <div class="lg:col-span-2">
         <a href="/" class="inline-flex items-center gap-2 mb-5">
           <div class="w-9 h-9 bg-blue-600 rounded flex items-center justify-center">
@@ -36,11 +34,10 @@ const footerLinks = {
           Tu portal de confianza para reseñas, noticias y recomendaciones de cine.
           Apasionados y unidos por el séptimo arte desde 2023.
         </p>
-        <!-- Social Icons -->
         <div class="flex items-center gap-3">
           {[
             { icon: "fa-brands fa-twitter", href: "#", label: "Twitter" },
-            { icon: "fa-brands fa-instagram", href: "#", label: "Instagram" },
+            { icon: "fa-brands fa-instagram", href: "https://www.instagram.com/equipocinehub/", label: "Instagram" },
             { icon: "fa-brands fa-youtube", href: "#", label: "YouTube" },
             { icon: "fa-brands fa-letterboxd", href: "#", label: "Letterboxd" },
           ].map(({ icon, href, label }) => (
@@ -55,7 +52,6 @@ const footerLinks = {
         </div>
       </div>
 
-      <!-- Explorar links -->
       <div>
         <h4 class="text-white font-['Barlow_Condensed'] font-semibold uppercase tracking-widest text-xs mb-5 text-blue-400">
           Explorar
@@ -72,7 +68,6 @@ const footerLinks = {
         </ul>
       </div>
 
-      <!-- Soporte links -->
       <div>
         <h4 class="text-white font-['Barlow_Condensed'] font-semibold uppercase tracking-widest text-xs mb-5 text-blue-400">
           Compañía
@@ -91,7 +86,6 @@ const footerLinks = {
     </div>
   </div>
 
-  <!-- Center Bottom bar -->
   <div class="border-t border-slate-800/60 py-5 px-6 lg:px-12">
     <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-3">
       <p class="text-slate-500 text-sm">

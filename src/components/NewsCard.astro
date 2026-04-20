@@ -1,0 +1,194 @@
+---
+
+export interface Props {
+  id:            number;
+  titulo:        string;
+  imagen:        string;
+  comentario:    string;
+  fuente:        string;
+  link_noticia:  string;
+  link_video?:   string;
+  fecha?:        string;
+  categoria?:    string;
+}
+
+const {
+  titulo,
+  imagen,
+  comentario,
+  fuente,
+  link_noticia,
+  link_video,
+  fecha,
+  categoria,
+} = Astro.props;
+
+
+const tieneVideo = Boolean(link_video && link_video.trim().length > 0);
+
+function formatFecha(iso?: string): string {
+  if (!iso) return "";
+  const [y, m, d] = iso.split("-").map(Number);
+  const meses = ["ene.", "feb.", "mar.", "abr.", "may.", "jun.",
+                  "jul.", "ago.", "sep.", "oct.", "nov.", "dic."];
+  return `${d} ${meses[m - 1]} ${y}`;
+}
+
+const categoriaColors: Record<string, string> = {
+  "Producción": "bg-blue-600/20   text-blue-400   border-blue-500/30",
+  "Entrevista": "bg-purple-600/20 text-purple-400 border-purple-500/30",
+  "Festivales": "bg-amber-600/20  text-amber-400  border-amber-500/30",
+  "Industria":  "bg-cyan-600/20   text-cyan-400   border-cyan-500/30",
+  "Tráilers":   "bg-red-600/20    text-red-400    border-red-500/30",
+  "Premios":    "bg-yellow-600/20 text-yellow-400 border-yellow-500/30",
+  "Animación":  "bg-green-600/20  text-green-400  border-green-500/30",
+  "Casting":    "bg-pink-600/20   text-pink-400   border-pink-500/30",
+};
+const categoriaClass = categoria
+  ? (categoriaColors[categoria] ?? "bg-slate-700/40 text-slate-400 border-slate-600/40")
+  : "";
+
+const fechaFormateada = formatFecha(fecha);
+---
+
+<article
+  class="
+    group flex flex-col rounded-2xl overflow-hidden
+    bg-slate-900 border border-slate-700/50
+    hover:border-blue-500/30
+    transition-all duration-400 ease-out
+    hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-blue-900/20
+  "
+>
+
+  <div class="relative overflow-hidden aspect-video">
+    <img
+      src={imagen}
+      alt={titulo}
+      loading="lazy"
+      decoding="async"
+      class="
+        w-full h-full object-cover object-center
+        transition-transform duration-700 ease-out
+        group-hover:scale-105
+      "
+    />
+    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/10 to-transparent" />
+
+    {categoria && (
+      <span class={`
+        absolute top-3 left-3
+        inline-flex items-center px-2.5 py-1 rounded-full
+        border text-[10px] font-semibold uppercase tracking-widest
+        backdrop-blur-sm
+        ${categoriaClass}
+      `}>
+        {categoria}
+      </span>
+    )}
+
+    {tieneVideo && (
+      <span class="
+        absolute top-3 right-3
+        inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full
+        bg-red-600/80 border border-red-500/50
+        text-white text-[10px] font-semibold backdrop-blur-sm
+        animate-pulse
+      ">
+        <i class="fa-solid fa-circle text-[6px]" />
+        VIDEO
+      </span>
+    )}
+  </div>
+
+  <div class="flex flex-col flex-1 p-5 gap-3">
+
+    <div class="flex items-center justify-between gap-2">
+      <span class="
+        inline-flex items-center gap-1.5
+        text-slate-500 text-xs italic
+      ">
+        <i class="fa-solid fa-newspaper text-blue-500/50 text-[10px] not-italic" />
+        Fuente:&nbsp;<span class="text-blue-400 not-italic font-semibold">{fuente}</span>
+      </span>
+
+      {fechaFormateada && (
+        <time
+          datetime={fecha}
+          class="text-slate-600 text-[10px] flex items-center gap-1 flex-shrink-0"
+        >
+          <i class="fa-regular fa-clock text-[9px]" />
+          {fechaFormateada}
+        </time>
+      )}
+    </div>
+
+    <div class="h-[1px] bg-slate-800/80" />
+
+    <h3 class="
+      font-['Barlow_Condensed'] font-semibold text-lg leading-snug
+      text-white group-hover:text-blue-300
+      transition-colors duration-300
+      line-clamp-3
+    ">
+      {titulo}
+    </h3>
+
+    <p class="
+      text-slate-400 text-sm leading-relaxed
+      line-clamp-3 flex-1
+    ">
+      {comentario}
+    </p>
+
+    <div class="flex flex-col sm:flex-row items-stretch gap-2 mt-auto pt-1">
+
+      <a
+        href={link_noticia}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="
+          flex-1 flex items-center justify-center gap-2
+          py-2.5 px-4 rounded-xl
+          bg-blue-600/10 hover:bg-blue-600
+          border border-blue-500/30 hover:border-blue-500
+          text-blue-400 hover:text-white
+          text-sm font-semibold
+          transition-all duration-250
+          group/read
+        "
+      >
+        <i class="fa-solid fa-arrow-up-right-from-square text-xs
+          transition-transform duration-200
+          group-hover/read:translate-x-0.5 group-hover/read:-translate-y-0.5
+        " />
+        Leer Noticia
+      </a>
+
+      {tieneVideo && (
+        <a
+          href={link_video}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="
+            flex-1 flex items-center justify-center gap-2
+            py-2.5 px-4 rounded-xl
+            bg-red-600/10 hover:bg-red-600
+            border border-red-500/30 hover:border-red-500
+            text-red-400 hover:text-white
+            text-sm font-semibold
+            transition-all duration-250
+            group/video
+          "
+        >
+          <i class="fa-brands fa-youtube text-sm
+            transition-transform duration-200
+            group-hover/video:scale-110
+          " />
+          Ver Video
+        </a>
+      )}
+
+    </div>
+  </div>
+</article>

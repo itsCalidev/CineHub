@@ -12,7 +12,7 @@ const {
   ogImage = "/og-cinehub.jpg",
 } = Astro.props;
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? "https://cine-hub.vercel.app");
+const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? "https://cinehub-web.vercel.app/");
 ---
 
 <!doctype html>
@@ -23,7 +23,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? "https://cine-hub
     <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
 
-    <!-- Open Graph / Social -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:title" content={`${title} | Cine-Hub`} />
@@ -31,13 +30,10 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? "https://cine-hub
     <meta property="og:image" content={ogImage} />
     <meta name="twitter:card" content="summary_large_image" />
 
-    <!-- Canonical -->
     <link rel="canonical" href={canonicalURL} />
 
-    <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-    <!-- Google Fonts: Bebas Neue (display) + Barlow (body) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -45,7 +41,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? "https://cine-hub
       rel="stylesheet"
     />
 
-    <!-- Font Awesome 6 via CDN -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
@@ -79,7 +74,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? "https://cine-hub
         letter-spacing: 0.04em;
       }
 
-      /* Scrollbar personalizado */
       ::-webkit-scrollbar {
         width: 6px;
       }
@@ -94,7 +88,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? "https://cine-hub
         background: #3b82f6;
       }
 
-      /* Animación de entrada para secciones */
       @keyframes fadeInUp {
         from {
           opacity: 0;
@@ -117,10 +110,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? "https://cine-hub
   </head>
 
   <body class="bg-[#0a0f1a] text-slate-200 antialiased">
-    <!-- Contenido principal inyectado por cada página -->
     <slot />
 
-    <!-- Script global: IntersectionObserver para animaciones al hacer scroll -->
     <script>
       const observer = new IntersectionObserver(
         (entries) => {

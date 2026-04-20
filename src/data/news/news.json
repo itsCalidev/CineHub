@@ -1,0 +1,90 @@
+[
+  {
+    "id": 1,
+    "titulo": "Denis Villeneuve confirma que 'Dune: Mesías' entrará en producción en 2025",
+    "imagen": "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=800&q=80",
+    "comentario": "El director canadiense ha confirmado oficialmente que la tercera entrega de la saga de Arrakis comenzará rodaje a finales de 2025. Villeneuve adelanta que la historia de Alia Atreides será el centro narrativo de la película.",
+    "fuente": "Deadline",
+    "link_noticia": "https://deadline.com",
+    "link_video": "https://www.youtube.com/watch?v=Way9Dexny3w",
+    "fecha": "2025-04-12",
+    "categoria": "Producción"
+  },
+  {
+    "id": 2,
+    "titulo": "Christopher Nolan revela detalles de su próximo proyecto: una ópera espacial original",
+    "imagen": "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=800&q=80",
+    "comentario": "En una entrevista exclusiva con The Guardian, Nolan describió su nuevo film como 'la historia más personal que ha contado hasta ahora', ambientada en el espacio profundo con un enfoque filosófico sobre la conciencia humana. Universal ya tiene los derechos.",
+    "fuente": "The Guardian",
+    "link_noticia": "https://theguardian.com",
+    "link_video": "https://www.youtube.com/watch?v=ohmRqc-5Kak",
+    "fecha": "2025-04-08",
+    "categoria": "Entrevista"
+  },
+  {
+    "id": 3,
+    "titulo": "Cannes 2025 anuncia su selección oficial: 21 films en competencia por la Palma de Oro",
+    "imagen": "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=800&q=80",
+    "comentario": "El Festival de Cannes presentó su selección oficial con representación de 18 países. Destacan trabajos de Wes Anderson, Park Chan-wook y la debutante Céline Sciamma con su esperado regreso tras 'Retrato de una mujer en llamas'.",
+    "fuente": "Variety",
+    "link_noticia": "https://variety.com",
+    "link_video": "",
+    "fecha": "2025-04-05",
+    "categoria": "Festivales"
+  },
+  {
+    "id": 4,
+    "titulo": "A24 y Netflix sellan un acuerdo histórico de distribución por 1.500 millones de dólares",
+    "imagen": "https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=800&q=80",
+    "comentario": "El acuerdo permitirá que los próximos 30 títulos de A24 lleguen a Netflix en una ventana exclusiva de 90 días tras su estreno en cines. El pacto, calificado como histórico por la industria, garantiza la viabilidad del modelo teatral independiente.",
+    "fuente": "The Hollywood Reporter",
+    "link_noticia": "https://hollywoodreporter.com",
+    "link_video": "",
+    "fecha": "2025-03-29",
+    "categoria": "Industria"
+  },
+  {
+    "id": 5,
+    "titulo": "Primer tráiler oficial de 'The Gorge': el thriller de amor de Apple TV+ que arrasa en redes",
+    "imagen": "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=800&q=80",
+    "comentario": "Apple TV+ publicó el primer tráiler de su esperada producción protagonizada por Miles Teller y Anya Taylor-Joy. El filme de Scott Derrickson mezcla romance y horror en un remoto puesto militar con un secreto subterráneo que amenaza a la humanidad.",
+    "fuente": "IndieWire",
+    "link_noticia": "https://indiewire.com",
+    "link_video": "https://www.youtube.com/watch?v=4TFVlbMDmm0",
+    "fecha": "2025-03-21",
+    "categoria": "Tráilers"
+  },
+  {
+    "id": 6,
+    "titulo": "Los Premios Goya abren convocatoria: el cine español apuesta por la ciencia ficción en 2025",
+    "imagen": "https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?w=800&q=80",
+    "comentario": "La Academia de Cine Española abre la inscripción de candidaturas para la 40ª edición de los Goya. Este año destaca un inusual volumen de producciones de género: cuatro ciencia ficción y dos thrillers de espionaje entre los grandes favoritos.",
+    "fuente": "El País",
+    "link_noticia": "https://elpais.com",
+    "link_video": "",
+    "fecha": "2025-03-15",
+    "categoria": "Premios"
+  },
+  {
+    "id": 7,
+    "titulo": "Pixar revela que 'Inside Out 3' ya está en desarrollo con un nuevo equipo creativo",
+    "imagen": "https://images.unsplash.com/photo-1594909122845-11baa439b7bf?w=800&q=80",
+    "comentario": "El estudio de animación confirmó la secuela en una nota interna filtrada a Deadline. La película explorará la adolescencia tardía de Riley y la incorporación de nuevas emociones complejas como la 'Ambivalencia' y la 'Nostalgia anticipada'.",
+    "fuente": "Deadline",
+    "link_noticia": "https://deadline.com",
+    "link_video": "",
+    "fecha": "2025-03-08",
+    "categoria": "Animación"
+  },
+  {
+    "id": 8,
+    "titulo": "Cate Blanchett y Tilda Swinton protagonizarán el nuevo thriller psicológico de Ari Aster",
+    "imagen": "https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=800&q=80",
+    "comentario": "A24 anunció el reparto del cuarto largo de Ari Aster. El proyecto, aún sin título oficial, reunirá a Blanchett y Swinton en lo que el director describió como 'un estudio sobre la identidad femenina y el horror doméstico, más íntimo que Beau tiene miedo'.",
+    "fuente": "Variety",
+    "link_noticia": "https://variety.com",
+    "link_video": "",
+    "fecha": "2025-02-28",
+    "categoria": "Casting"
+  }
+]

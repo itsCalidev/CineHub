@@ -11,7 +11,6 @@ export interface Props {
   duracion?: string;
   calificacion?: number | null;
   genero?: string[];
-  /** Controla el tamaño del badge de categoría si se necesita mostrarlo */
   showCategoria?: boolean;
   categoria?: "reciente" | "clasico" | "proximo";
 }
@@ -30,7 +29,6 @@ const {
   categoria,
 } = Astro.props;
 
-// Helpers
 const categoriaLabel: Record<string, string> = {
   reciente:  "Estreno",
   clasico:   "Clásico",
@@ -47,10 +45,6 @@ const starsFull  = calificacion ? Math.floor(calificacion / 2) : 0;
 const starsEmpty = 5 - starsFull;
 ---
 
-<!-- 
-  La clase `group` en el article activa los utility-variants group-hover:
-  en todos los hijos, lo que permite el efecto de escala coordinado.
--->
 <article
   class="
     group relative flex flex-col rounded-2xl overflow-hidden
@@ -61,7 +55,6 @@ const starsEmpty = 5 - starsFull;
     cursor-pointer
   "
 >
-  <!-- ── IMAGEN + OVERLAY ─────────────────────────────────────── -->
   <div class="relative overflow-hidden aspect-[2/3] max-h-72">
     <img
       src={image}
@@ -75,12 +68,10 @@ const starsEmpty = 5 - starsFull;
       "
     />
 
-    <!-- Degradado inferior permanente -->
     <div
       class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent"
     />
 
-    <!-- Badge de categoría (opcional) -->
     {showCategoria && categoria && (
       <span
         class={`
@@ -94,7 +85,6 @@ const starsEmpty = 5 - starsFull;
       </span>
     )}
 
-    <!-- Badge de calificación (si existe) -->
     {calificacion !== null && calificacion !== undefined && (
       <div
         class="
@@ -111,7 +101,6 @@ const starsEmpty = 5 - starsFull;
       </div>
     )}
 
-    <!-- Overlay al hover: icono de play -->
     <div
       class="
         absolute inset-0 flex items-center justify-center
@@ -140,10 +129,8 @@ const starsEmpty = 5 - starsFull;
     </div>
   </div>
 
-  <!-- ── CONTENIDO ─────────────────────────────────────────────── -->
   <div class="flex flex-col flex-1 p-5 gap-3">
 
-    <!-- Géneros (chips) -->
     {genero.length > 0 && (
       <div class="flex flex-wrap gap-1.5">
         {genero.slice(0, 3).map((g) => (
@@ -154,7 +141,6 @@ const starsEmpty = 5 - starsFull;
       </div>
     )}
 
-    <!-- Título -->
     <h3
       class="
         font-['Bebas_Neue'] text-2xl leading-tight tracking-wide
@@ -166,7 +152,6 @@ const starsEmpty = 5 - starsFull;
       {title}
     </h3>
 
-    <!-- Meta: año · director · duración -->
     <div class="flex items-center flex-wrap gap-x-3 gap-y-1 text-xs text-slate-500">
       {anio && (
         <span class="flex items-center gap-1">
@@ -194,7 +179,6 @@ const starsEmpty = 5 - starsFull;
       )}
     </div>
 
-    <!-- Estrellas -->
     {calificacion !== null && calificacion !== undefined && (
       <div
         class="flex items-center gap-1"
@@ -210,12 +194,10 @@ const starsEmpty = 5 - starsFull;
       </div>
     )}
 
-    <!-- Descripción truncada a 3 líneas -->
     <p class="text-slate-400 text-sm leading-relaxed line-clamp-3 flex-1">
       {description}
     </p>
 
-    <!-- CTA -->
     <a
       href={trailer}
       target="_blank"

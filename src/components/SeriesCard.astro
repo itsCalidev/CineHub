@@ -1,7 +1,5 @@
 ---
 // src/components/SeriesCard.astro
-// Convierte la función renderSeries() del PHP original en un componente reutilizable.
-// Novedad respecto a MovieCard: dropdown de plataformas con hover puro en Tailwind.
 
 export interface Plataforma {
   nombre: string;
@@ -40,7 +38,6 @@ const {
   categoria,
 } = Astro.props;
 
-// ── Helpers ──────────────────────────────────────────────────────────────────
 const tienePlataformas = plataformas.length > 0;
 
 const categoriaLabel: Record<string, string> = {
@@ -55,7 +52,6 @@ const categoriaColor: Record<string, string> = {
   proximo:  "bg-cyan-600/20  text-cyan-400  border-cyan-500/30",
 };
 
-// Íconos de plataforma → Font Awesome class
 const iconoPorPlataforma: Record<string, string> = {
   "Netflix":       "fa-brands fa-n",
   "HBO":           "fa-solid fa-tv",
@@ -85,7 +81,6 @@ const starsEmpty = 5 - starsFull;
     hover:-translate-y-2 hover:shadow-2xl hover:shadow-blue-900/30
   "
 >
-  <!-- ── IMAGEN ────────────────────────────────────────────────── -->
   <div class="relative overflow-hidden rounded-t-2xl aspect-[2/3] max-h-72">
     <img
       src={image}
@@ -99,10 +94,8 @@ const starsEmpty = 5 - starsFull;
       "
     />
 
-    <!-- Degradado inferior -->
     <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/30 to-transparent" />
 
-    <!-- Badge de categoría -->
     {showCategoria && categoria && (
       <span class={`
         absolute top-3 left-3 px-3 py-1 rounded-full
@@ -113,7 +106,6 @@ const starsEmpty = 5 - starsFull;
       </span>
     )}
 
-    <!-- Badge de calificación -->
     {calificacion != null && (
       <div
         class="
@@ -128,7 +120,6 @@ const starsEmpty = 5 - starsFull;
       </div>
     )}
 
-    <!-- Overlay play al hover -->
     <div class="
       absolute inset-0 flex items-center justify-center
       bg-blue-950/60 backdrop-blur-[2px]
@@ -153,10 +144,8 @@ const starsEmpty = 5 - starsFull;
     </div>
   </div>
 
-  <!-- ── CONTENIDO ─────────────────────────────────────────────── -->
   <div class="flex flex-col flex-1 p-5 gap-3">
 
-    <!-- Chips de género -->
     {genero.length > 0 && (
       <div class="flex flex-wrap gap-1.5">
         {genero.slice(0, 3).map((g) => (
@@ -171,7 +160,6 @@ const starsEmpty = 5 - starsFull;
       </div>
     )}
 
-    <!-- Título -->
     <h3 class="
       font-['Bebas_Neue'] text-2xl leading-tight tracking-wide
       text-white group-hover:text-blue-300
@@ -180,7 +168,6 @@ const starsEmpty = 5 - starsFull;
       {title}
     </h3>
 
-    <!-- Meta: año · creador · temporadas · episodios -->
     <div class="flex items-center flex-wrap gap-x-3 gap-y-1 text-xs text-slate-500">
       {anio && (
         <span class="flex items-center gap-1">
@@ -217,7 +204,6 @@ const starsEmpty = 5 - starsFull;
       )}
     </div>
 
-    <!-- Estrellas -->
     {calificacion != null && (
       <div class="flex items-center gap-1" aria-label={`Calificación: ${calificacion} de 10`}>
         {Array.from({ length: starsFull  }, () => (
@@ -230,15 +216,12 @@ const starsEmpty = 5 - starsFull;
       </div>
     )}
 
-    <!-- Descripción -->
     <p class="text-slate-400 text-sm leading-relaxed line-clamp-3 flex-1">
       {description}
     </p>
 
-    <!-- ── BOTONES ─────────────────────────────────────────────── -->
     <div class="mt-auto flex items-stretch gap-2">
 
-      <!-- Botón: Ver Tráiler (siempre visible) -->
       <a
         href={trailer}
         target="_blank"
@@ -257,18 +240,6 @@ const starsEmpty = 5 - starsFull;
         Ver Tráiler
       </a>
 
-      <!-- ──────────────────────────────────────────────────────── -->
-      <!--  DROPDOWN "VER SERIES" — HOVER PURO CON TAILWIND         -->
-      <!--                                                           -->
-      <!--  Estrategia:                                              -->
-      <!--  1. Un div `relative group/dropdown` envuelve botón+menú -->
-      <!--  2. El menú tiene `opacity-0 invisible translate-y-1`     -->
-      <!--     y pasa a `group-hover/dropdown:opacity-100            -->
-      <!--     group-hover/dropdown:visible                          -->
-      <!--     group-hover/dropdown:translate-y-0` al hacer hover.  -->
-      <!--  3. `pointer-events-none` en reposo para no bloquear      -->
-      <!--     clicks en tarjetas vecinas.                           -->
-      <!-- ──────────────────────────────────────────────────────── -->
       {tienePlataformas && (
         <div class="relative group/dropdown flex-1">
 
@@ -361,6 +332,6 @@ const starsEmpty = 5 - starsFull;
         </div>
       )}
 
-    </div><!-- /botones -->
-  </div><!-- /contenido -->
+    </div>
+  </div>
 </article>
