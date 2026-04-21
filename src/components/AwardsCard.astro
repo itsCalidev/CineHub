@@ -1,0 +1,312 @@
+---
+// src/components/GalardonadaCard.astro
+// Versión premium de las tarjetas del proyecto PHP original.
+// Convierte el `<button class="boton-fecha btn btn-warning">` en un badge
+// flotante dorado posicionado sobre la imagen con efecto glow.
+
+export interface Props {
+  id:               number;
+  titulo:           string;
+  imagen:           string;
+  descripcion:      string;
+  anio:             number;
+  nombre_premio:    string;
+  link_presentacion: string;
+  premios_extra?:   string[];
+  director?:        string;
+  pais?:            string;
+  total_premios?:   number;
+}
+
+const {
+  titulo,
+  imagen,
+  descripcion,
+  anio,
+  nombre_premio,
+  link_presentacion,
+  premios_extra = [],
+  director,
+  pais,
+  total_premios,
+} = Astro.props;
+
+// Separar el nombre del premio en dos partes si tiene " — "
+// Ej: "Mejor Película — Premios Óscar" → ["Mejor Película", "Premios Óscar"]
+const [premioPrincipal, ceremonia] = nombre_premio.includes(" — ")
+  ? nombre_premio.split(" — ")
+  : [nombre_premio, ""];
+---
+
+<!--
+  La tarjeta usa `group` para coordinar los efectos hover entre
+  imagen, borde, sombra y contenido en una sola directiva.
+  La sombra dorada se activa con group-hover en la capa de glow.
+-->
+<article
+  class="
+    group relative flex flex-col rounded-2xl overflow-hidden
+    bg-gradient-to-b from-slate-900 to-[#0a0c14]
+    border border-yellow-900/30
+    hover:border-yellow-500/50
+    transition-all duration-500 ease-out
+    hover:-translate-y-2
+    hover:shadow-2xl hover:shadow-yellow-500/20
+    cursor-default
+  "
+>
+
+  <!-- ── IMAGEN + BADGE FLOTANTE ──────────────────────────────── -->
+  <div class="relative overflow-hidden aspect-[2/3] max-h-72">
+
+    <!-- Imagen con zoom al hover -->
+    <img
+      src={imagen}
+      alt={`Póster de ${titulo}`}
+      loading="lazy"
+      decoding="async"
+      class="
+        w-full h-full object-cover object-center
+        transition-transform duration-700 ease-out
+        group-hover:scale-110
+      "
+    />
+
+    <!-- Degradado base permanente (imagen → contenido) -->
+    <div
+      class="
+        absolute inset-0
+        bg-gradient-to-t from-[#0a0c14] via-[#0a0c14]/30 to-transparent
+      "
+    />
+
+    <!-- Velo dorado sutil al hover -->
+    <div
+      class="
+        absolute inset-0
+        bg-gradient-to-t from-yellow-950/40 via-transparent to-transparent
+        opacity-0 group-hover:opacity-100
+        transition-opacity duration-500
+      "
+    />
+
+    <!--
+      BADGE FLOTANTE — Convierte el <button class="boton-fecha btn btn-warning">
+      del PHP original en una insignia premium absolutamente posicionada.
+      Se superpone al borde inferior de la imagen usando `translate-y-1/2`.
+    -->
+    <div
+      class="
+        absolute -bottom-4 left-5 z-10
+        flex items-center gap-2
+        px-4 py-2 rounded-xl
+        bg-gradient-to-r from-yellow-500 to-amber-400
+        border border-yellow-300/40
+        shadow-lg shadow-yellow-900/50
+        group-hover:shadow-xl group-hover:shadow-yellow-500/40
+        group-hover:from-yellow-400 group-hover:to-amber-300
+        transition-all duration-500
+      "
+      aria-label={`Año del premio: ${anio}`}
+    >
+      <!-- Trofeo + año -->
+      <i class="fa-solid fa-trophy text-yellow-900 text-sm drop-shadow-sm" />
+      <span class="font-['Bebas_Neue'] text-yellow-950 text-xl leading-none tracking-wider">
+        {anio}
+      </span>
+    </div>
+
+    <!-- Total de premios (si aplica) — esquina superior derecha -->
+    {total_premios && (
+      <div
+        class="
+          absolute top-3 right-3
+          flex flex-col items-center justify-center
+          w-11 h-11 rounded-full
+          bg-slate-900/80 backdrop-blur-sm
+          border border-yellow-500/40
+          group-hover:border-yellow-400/70
+          transition-all duration-400
+        "
+        title={`${total_premios} premios obtenidos`}
+      >
+        <span class="font-['Bebas_Neue'] text-yellow-400 text-lg leading-none">
+          {total_premios}
+        </span>
+        <span class="text-yellow-600 text-[8px] leading-none uppercase tracking-wide">
+          premios
+        </span>
+      </div>
+    )}
+
+    <!-- Overlay play al hover -->
+    <div
+      class="
+        absolute inset-0 flex items-center justify-center
+        bg-yellow-950/50 backdrop-blur-[2px]
+        opacity-0 group-hover:opacity-100
+        transition-opacity duration-400
+      "
+    >
+      <a
+        href={link_presentacion}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={`Ver presentación de ${titulo}`}
+        class="
+          w-16 h-16 rounded-full
+          bg-yellow-500 hover:bg-yellow-400
+          flex items-center justify-center
+          shadow-2xl shadow-yellow-900/60
+          border-2 border-yellow-300/50
+          transition-all duration-200 hover:scale-110 active:scale-95
+        "
+        onclick="event.stopPropagation()"
+      >
+        <i class="fa-solid fa-play text-yellow-950 text-xl ml-1" />
+      </a>
+    </div>
+  </div>
+
+  <!-- ── CONTENIDO ─────────────────────────────────────────────── -->
+  <!--
+    Margin-top extra para compensar el badge flotante que sobresale
+    de la imagen (-bottom-4 = 1rem), más un poco de padding.
+  -->
+  <div class="flex flex-col flex-1 pt-7 pb-5 px-5 gap-3">
+
+    <!-- Nombre del premio en dorado -->
+    <div class="flex flex-col gap-0.5">
+      <p class="
+        text-yellow-400 text-xs font-['Barlow_Condensed'] font-semibold
+        uppercase tracking-[0.18em] flex items-center gap-1.5
+      ">
+        <i class="fa-solid fa-star text-yellow-500/70 text-[10px]" />
+        {premioPrincipal}
+      </p>
+      {ceremonia && (
+        <p class="text-yellow-600/80 text-[10px] italic font-medium pl-4">
+          {ceremonia}
+        </p>
+      )}
+    </div>
+
+    <!-- Título -->
+    <h3
+      class="
+        font-['Bebas_Neue'] text-2xl leading-tight tracking-wide
+        text-white group-hover:text-yellow-200
+        transition-colors duration-300
+        line-clamp-2
+      "
+    >
+      {titulo}
+    </h3>
+
+    <!-- Meta: director · país -->
+    <div class="flex items-center flex-wrap gap-x-3 gap-y-1 text-xs text-slate-500 -mt-1">
+      {director && (
+        <span class="flex items-center gap-1">
+          <i class="fa-solid fa-clapperboard text-yellow-600/60 text-[10px]" />
+          {director}
+        </span>
+      )}
+      {director && pais && <span class="w-[1px] h-3 bg-slate-700" />}
+      {pais && (
+        <span class="flex items-center gap-1">
+          <i class="fa-solid fa-earth-americas text-yellow-600/60 text-[10px]" />
+          {pais}
+        </span>
+      )}
+    </div>
+
+    <!-- Premios extra (chips) -->
+    {premios_extra.length > 0 && (
+      <div class="flex flex-wrap gap-1.5">
+        {premios_extra.slice(0, 3).map((p) => (
+          <span class="
+            inline-flex items-center gap-1 px-2 py-0.5 rounded-md
+            bg-yellow-950/50 border border-yellow-800/40
+            text-yellow-500/80 text-[10px] font-medium
+          ">
+            <i class="fa-solid fa-trophy text-[8px] text-yellow-600/60" />
+            {p}
+          </span>
+        ))}
+        {premios_extra.length > 3 && (
+          <span class="
+            px-2 py-0.5 rounded-md
+            bg-slate-800/60 border border-slate-700/40
+            text-slate-500 text-[10px]
+          ">
+            +{premios_extra.length - 3} más
+          </span>
+        )}
+      </div>
+    )}
+
+    <!-- Separador decorativo dorado -->
+    <div class="flex items-center gap-2 my-0.5">
+      <div class="h-[1px] flex-1 bg-gradient-to-r from-yellow-700/40 to-transparent" />
+      <i class="fa-solid fa-star text-yellow-800/60 text-[8px]" />
+      <div class="h-[1px] w-8 bg-slate-800/80" />
+    </div>
+
+    <!-- Descripción truncada a 4 líneas -->
+    <p class="text-slate-400 text-sm leading-relaxed line-clamp-4 flex-1">
+      {descripcion}
+    </p>
+
+    <!-- CTA: Ver Presentación -->
+    <a
+      href={link_presentacion}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="
+        mt-auto flex items-center justify-center gap-2
+        py-3 px-4 rounded-xl
+        bg-yellow-500/10 hover:bg-yellow-500
+        border border-yellow-500/40 hover:border-yellow-400
+        text-yellow-400 hover:text-yellow-950
+        text-sm font-semibold
+        transition-all duration-300
+        group/cta
+        shadow-inner shadow-yellow-900/10
+        hover:shadow-md hover:shadow-yellow-500/30
+      "
+    >
+      <i
+        class="
+          fa-brands fa-youtube text-base
+          transition-transform duration-200
+          group-hover/cta:scale-110
+        "
+      />
+      Ver Presentación
+      <i
+        class="
+          fa-solid fa-arrow-up-right-from-square text-[10px]
+          opacity-50 group-hover/cta:opacity-100
+          transition-all duration-200
+          group-hover/cta:translate-x-0.5 group-hover/cta:-translate-y-0.5
+        "
+      />
+    </a>
+
+  </div>
+
+  <!--
+    Línea de glow inferior: decoración que parpadea suavemente
+    al hacer hover sobre la tarjeta completa.
+  -->
+  <div
+    class="
+      absolute bottom-0 left-0 right-0 h-[2px]
+      bg-gradient-to-r from-transparent via-yellow-500/60 to-transparent
+      opacity-0 group-hover:opacity-100
+      transition-opacity duration-500
+    "
+    aria-hidden="true"
+  />
+
+</article>

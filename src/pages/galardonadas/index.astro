@@ -1,0 +1,419 @@
+---
+// src/pages/galardonadas/awards.astro
+
+import Layout          from "../../layouts/Layout.astro";
+import Header          from "../../components/Header.astro";
+import Footer          from "../../components/Footer.astro";
+import GalardonadaCard from "../../components/AwardsCard.astro";
+
+import rawGalardonadas from "../../data/awards.json";
+
+interface Galardonada {
+  id:                number;
+  titulo:            string;
+  imagen:            string;
+  descripcion:       string;
+  anio:              number;
+  nombre_premio:     string;
+  link_presentacion: string;
+  premios_extra?:    string[];
+  director?:         string;
+  pais?:             string;
+  total_premios?:    number;
+}
+
+const galardonadas = rawGalardonadas as Galardonada[];
+
+const ordenadas = [...galardonadas].sort((a, b) => b.anio - a.anio);
+
+const total          = ordenadas.length;
+const totalPremios   = ordenadas.reduce((acc, g) => acc + (g.total_premios ?? 0), 0);
+const aniosUnicos    = [...new Set(ordenadas.map(g => g.anio))].length;
+const destacada      = ordenadas[0];
+---
+
+<Layout
+  title="Películas Galardonadas"
+  description={`Descubre las ${total} obras maestras del cine galardonadas con los premios más importantes de la industria: Oscar, Cannes, Venecia y más.`}
+>
+  <Header />
+
+  <main class="pt-[68px] bg-[#080b12]">
+
+    <section
+      class="relative w-full h-[65vh] min-h-[480px] flex items-center justify-center overflow-hidden"
+      aria-label="Películas galardonadas con los mayores premios del cine"
+    >
+      <img
+        src="/assets/image-oscars.webP"
+        alt="Estatuillas de los Premios Oscar en una ceremonia de gala"
+        class="absolute inset-0 w-full h-full object-cover object-center scale-105"
+        loading="eager"
+        onerror="this.src='https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?w=1600&q=80'; this.onerror=null;"
+      />
+
+      <div class="absolute inset-0 bg-[#080b12]/80" />
+      <div class="absolute inset-0 bg-gradient-to-b from-[#080b12]/60 via-transparent to-[#080b12]" />
+      <div class="absolute inset-0 bg-gradient-to-r from-[#080b12]/70 via-transparent to-[#080b12]/40" />
+
+      <div
+        class="absolute inset-0 pointer-events-none"
+        style="background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(234,179,8,0.06) 0%, transparent 70%)"
+        aria-hidden="true"
+      />
+
+      <div class="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        {Array.from({ length: 22 }, (_, i) => (
+          <span
+            class="absolute rounded-full bg-yellow-400/30 animate-pulse-slow"
+            style={`
+              width:  ${1 + (i % 3)}px;
+              height: ${1 + (i % 3)}px;
+              top:    ${8 + (i * 53) % 84}%;
+              left:   ${4 + (i * 41) % 92}%;
+              animation-delay:    ${(i * 0.18) % 4}s;
+              animation-duration: ${2 + (i % 4)}s;
+            `}
+          />
+        ))}
+      </div>
+
+      <div class="relative z-10 text-center px-6 max-w-4xl mx-auto">
+
+        <div class="flex items-center justify-center gap-4 mb-5">
+          <i class="fa-solid fa-star text-yellow-600/40 text-sm" />
+          <i class="fa-solid fa-trophy text-yellow-500/60 text-xl" />
+          <div class="flex items-center gap-2">
+            <span class="w-8 h-[2px] bg-gradient-to-r from-transparent to-yellow-500 rounded" />
+            <span class="text-yellow-400 font-['Barlow_Condensed'] uppercase tracking-[0.3em] text-xs font-semibold">
+              Lo Mejor del Cine
+            </span>
+            <span class="w-8 h-[2px] bg-gradient-to-l from-transparent to-yellow-500 rounded" />
+          </div>
+          <i class="fa-solid fa-trophy text-yellow-500/60 text-xl" />
+          <i class="fa-solid fa-star text-yellow-600/40 text-sm" />
+        </div>
+
+        <h1 class="font-['Bebas_Neue'] text-5xl sm:text-7xl lg:text-8xl leading-none tracking-wide mb-2">
+          <span class="text-white">Películas</span>
+          <br />
+          <span
+            class="
+              bg-gradient-to-r from-yellow-400 via-amber-300 to-yellow-500
+              bg-clip-text text-transparent
+            "
+          >
+            Galardonadas
+          </span>
+        </h1>
+
+        <p class="text-slate-300 text-base sm:text-lg max-w-2xl mx-auto mt-5 mb-8 leading-relaxed">
+          Las obras que marcaron una época. Reconocidas por
+          <span class="text-yellow-400 font-semibold">los festivales y academias más prestigiosas</span>
+          {" "}del mundo. El cine en su máxima expresión.
+        </p>
+
+        <div class="flex items-center justify-center gap-10">
+          {[
+            { valor: String(total),       sufijo: "",      label: "Obras",         icono: "fa-solid fa-film"    },
+            { valor: String(totalPremios), sufijo: "+",    label: "Premios",       icono: "fa-solid fa-trophy"  },
+            { valor: String(aniosUnicos),  sufijo: "",     label: "Años",          icono: "fa-solid fa-calendar"},
+          ].map(({ valor, sufijo, label, icono }) => (
+            <div class="text-center flex flex-col items-center gap-1.5">
+              <div class="w-10 h-10 rounded-xl bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center mb-1">
+                <i class={`${icono} text-yellow-400/80 text-sm`} />
+              </div>
+              <p class="font-['Bebas_Neue'] text-3xl text-white leading-none">
+                {valor}<span class="text-yellow-400">{sufijo}</span>
+              </p>
+              <p class="text-slate-500 text-[10px] uppercase tracking-widest">{label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 animate-bounce">
+        <span class="text-yellow-500/40 text-xs uppercase tracking-widest font-['Barlow_Condensed']">Explorar</span>
+        <i class="fa-solid fa-chevron-down text-yellow-500/40 text-sm" />
+      </div>
+    </section>
+
+    <section class="py-20 bg-[#080b12] relative overflow-hidden" aria-label="Introducción a las películas galardonadas">
+
+      <div class="absolute inset-0 pointer-events-none overflow-hidden opacity-[0.03]" aria-hidden="true">
+        <div class="absolute -top-20 -left-20 w-96 h-96 border border-yellow-400 rounded-full" />
+        <div class="absolute -bottom-20 -right-20 w-80 h-80 border border-yellow-400 rounded-full" />
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-yellow-500 rounded-full" />
+      </div>
+
+      <div class="max-w-7xl mx-auto px-6 lg:px-12 relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
+
+          <div class="animate-on-scroll space-y-6">
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-[2px] bg-yellow-500 rounded" />
+              <span class="text-yellow-400 font-['Barlow_Condensed'] uppercase tracking-[0.2em] text-xs font-semibold">
+                Reconocimiento a la excelencia
+              </span>
+            </div>
+
+            <h2 class="font-['Bebas_Neue'] text-4xl sm:text-5xl text-white leading-tight">
+              Cuando el cine
+              <span class="block text-yellow-400">alcanza lo eterno</span>
+            </h2>
+
+            <p class="text-slate-300 leading-relaxed">
+              Algunos films trascienden el entretenimiento para convertirse en documentos de su tiempo,
+              espejos de la sociedad y obras de arte que perduran en la memoria colectiva.
+              Los premios más importantes de la industria cinematográfica reconocen este mérito.
+            </p>
+            <p class="text-slate-400 text-sm leading-relaxed">
+              En esta sección reunimos las obras galardonadas por festivales como Cannes, Venecia y Berlín,
+              además de las grandes ceremonias de premios: los Óscar, BAFTA, Globos de Oro y los premios de
+              las principales academias nacionales de cine del mundo.
+            </p>
+
+            <div class="flex flex-wrap gap-2 pt-2">
+              {["Premios Óscar", "Festival de Cannes", "Festival de Venecia", "BAFTA", "Globos de Oro", "Berlinale"].map((p) => (
+                <span class="
+                  inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg
+                  bg-yellow-950/40 border border-yellow-800/40
+                  text-yellow-500/80 text-xs font-medium
+                  hover:border-yellow-600/50 hover:text-yellow-400
+                  transition-colors duration-200
+                ">
+                  <i class="fa-solid fa-award text-[10px] text-yellow-600/60" />
+                  {p}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div class="animate-on-scroll">
+            <p class="text-slate-500 text-xs uppercase tracking-widest font-semibold mb-4 flex items-center gap-2">
+              <i class="fa-solid fa-trophy text-yellow-500/60 text-[11px]" />
+              Obra destacada · {destacada.anio}
+            </p>
+
+            <div class="
+              relative rounded-2xl overflow-hidden border border-yellow-800/30
+              hover:border-yellow-500/40 transition-all duration-500
+              group hover:shadow-2xl hover:shadow-yellow-900/30
+            ">
+              <div class="aspect-[16/9] overflow-hidden">
+                <img
+                  src={destacada.imagen}
+                  alt={destacada.titulo}
+                  loading="lazy"
+                  class="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
+                />
+              </div>
+              <div class="absolute inset-0 bg-gradient-to-t from-[#080b12] via-[#080b12]/40 to-transparent" />
+
+              <div class="absolute bottom-0 left-0 right-0 p-5">
+                <p class="text-yellow-400 text-xs font-semibold italic mb-1 flex items-center gap-1.5">
+                  <i class="fa-solid fa-trophy text-[10px] not-italic" />
+                  {destacada.nombre_premio}
+                </p>
+                <h3 class="font-['Bebas_Neue'] text-2xl text-white tracking-wide group-hover:text-yellow-200 transition-colors mb-3">
+                  {destacada.titulo}
+                </h3>
+                <a
+                  href={destacada.link_presentacion}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="
+                    inline-flex items-center gap-2 px-4 py-2 rounded-xl
+                    bg-yellow-500/20 hover:bg-yellow-500 border border-yellow-500/40 hover:border-yellow-400
+                    text-yellow-400 hover:text-yellow-950
+                    text-sm font-semibold transition-all duration-300
+                  "
+                >
+                  <i class="fa-solid fa-play text-xs" />
+                  Ver Presentación
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="flex items-center gap-4 px-12 py-2" aria-hidden="true">
+      <div class="h-[1px] flex-1 bg-gradient-to-r from-transparent via-yellow-700/40 to-transparent" />
+      <div class="flex items-center gap-2 text-yellow-700/40">
+        <i class="fa-solid fa-star text-xs" />
+        <i class="fa-solid fa-trophy text-base" />
+        <i class="fa-solid fa-star text-xs" />
+      </div>
+      <div class="h-[1px] flex-1 bg-gradient-to-r from-transparent via-yellow-700/40 to-transparent" />
+    </div>
+
+    <section
+      id="coleccion"
+      class="py-20 bg-[#080b12]"
+      aria-labelledby="heading-galardonadas"
+    >
+      <div class="max-w-7xl mx-auto px-6 lg:px-12">
+
+        <header class="text-center mb-14 animate-on-scroll">
+          <div class="flex items-center justify-center gap-3 mb-4">
+            <span class="w-12 h-[1px] bg-gradient-to-r from-transparent to-yellow-500 rounded" />
+            <i class="fa-solid fa-award text-yellow-500/70 text-base" />
+            <span class="text-yellow-400 font-['Barlow_Condensed'] uppercase tracking-[0.25em] text-xs font-semibold">
+              Colección completa
+            </span>
+            <i class="fa-solid fa-award text-yellow-500/70 text-base" />
+            <span class="w-12 h-[1px] bg-gradient-to-l from-transparent to-yellow-500 rounded" />
+          </div>
+
+          <h2
+            id="heading-galardonadas"
+            class="font-['Bebas_Neue'] text-5xl sm:text-6xl text-white tracking-wide leading-none"
+          >
+            Obras Maestras
+            <span class="block bg-gradient-to-r from-yellow-400 via-amber-300 to-yellow-500 bg-clip-text text-transparent">
+              del Séptimo Arte
+            </span>
+          </h2>
+
+          <p class="text-slate-400 mt-4 max-w-xl mx-auto">
+            {total} obras seleccionadas por sus galardones, su impacto en la cultura y su calidad cinematográfica.
+          </p>
+        </header>
+
+        {ordenadas.length > 0 ? (
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {ordenadas.map((g, i) => (
+              <!--
+                Cada tarjeta tiene `animate-on-scroll` para el IntersectionObserver
+                del Layout.astro, más un `animation-delay` escalonado
+                para el efecto de aparición en cascada al cargar la página.
+              -->
+              <div
+                class="animate-on-scroll"
+                style={`animation-delay: ${i * 0.13}s`}
+              >
+                <GalardonadaCard
+                  id={g.id}
+                  titulo={g.titulo}
+                  imagen={g.imagen}
+                  descripcion={g.descripcion}
+                  anio={g.anio}
+                  nombre_premio={g.nombre_premio}
+                  link_presentacion={g.link_presentacion}
+                  premios_extra={g.premios_extra}
+                  director={g.director}
+                  pais={g.pais}
+                  total_premios={g.total_premios}
+                />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div class="flex flex-col items-center justify-center py-20 gap-4 text-center">
+            <i class="fa-solid fa-trophy text-yellow-900/40 text-5xl" />
+            <p class="text-slate-500 text-lg">No hay películas galardonadas por el momento.</p>
+          </div>
+        )}
+
+      </div>
+    </section>
+
+    <section class="py-16 bg-[#060810] relative overflow-hidden">
+      <div
+        class="absolute inset-0 pointer-events-none"
+        style="background: radial-gradient(ellipse 50% 80% at 50% 50%, rgba(234,179,8,0.04) 0%, transparent 70%)"
+        aria-hidden="true"
+      />
+
+      <div class="max-w-3xl mx-auto px-6 text-center animate-on-scroll relative z-10">
+        <i class="fa-solid fa-quote-left text-yellow-900/40 text-5xl mb-6 block" aria-hidden="true" />
+
+        <blockquote class="font-['Bebas_Neue'] text-2xl sm:text-3xl text-slate-300 leading-relaxed mb-5 tracking-wide">
+          "El cine es el espejo de la sociedad, y los premios son el reconocimiento de que ese espejo
+          refleja algo verdaderamente <span class="text-yellow-400">eterno</span>."
+        </blockquote>
+
+        <p class="text-slate-600 text-sm italic">— Equipo editorial Cine-Hub</p>
+
+        <div class="flex items-center justify-center gap-4 mt-10">
+          <div class="h-[1px] w-24 bg-gradient-to-r from-transparent to-yellow-700/50" />
+          <i class="fa-solid fa-star text-yellow-700/40 text-xs" />
+          <div class="h-[1px] w-24 bg-gradient-to-l from-transparent to-yellow-700/50" />
+        </div>
+      </div>
+    </section>
+
+    <section class="py-16 bg-[#080b12] border-t border-yellow-900/20">
+      <div class="max-w-7xl mx-auto px-6 lg:px-12">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 animate-on-scroll">
+
+          <a
+            href="/resenas"
+            class="
+              group flex items-center gap-4 p-5 rounded-2xl
+              bg-slate-900/60 border border-slate-700/50
+              hover:border-yellow-500/30 hover:-translate-y-1
+              hover:shadow-xl hover:shadow-yellow-900/15
+              transition-all duration-400
+            "
+          >
+            <div class="w-12 h-12 rounded-xl bg-yellow-600/15 border border-yellow-700/30 flex items-center justify-center flex-shrink-0 group-hover:bg-yellow-600/25 transition-colors">
+              <i class="fa-solid fa-star-half-stroke text-yellow-400 text-lg" />
+            </div>
+            <div>
+              <h3 class="font-['Bebas_Neue'] text-xl text-white tracking-wide group-hover:text-yellow-200 transition-colors">Leer Reseñas</h3>
+              <p class="text-slate-500 text-xs mt-0.5">Análisis en profundidad</p>
+            </div>
+            <i class="fa-solid fa-arrow-right ml-auto text-slate-700 group-hover:text-yellow-500 group-hover:translate-x-1 transition-all" />
+          </a>
+
+          <a
+            href="/peliculas"
+            class="
+              group flex items-center gap-4 p-5 rounded-2xl
+              bg-slate-900/60 border border-slate-700/50
+              hover:border-blue-500/30 hover:-translate-y-1
+              hover:shadow-xl hover:shadow-blue-900/15
+              transition-all duration-400
+            "
+          >
+            <div class="w-12 h-12 rounded-xl bg-blue-600/15 border border-blue-700/30 flex items-center justify-center flex-shrink-0 group-hover:bg-blue-600/25 transition-colors">
+              <i class="fa-solid fa-film text-blue-400 text-lg" />
+            </div>
+            <div>
+              <h3 class="font-['Bebas_Neue'] text-xl text-white tracking-wide group-hover:text-blue-200 transition-colors">Ver Películas</h3>
+              <p class="text-slate-500 text-xs mt-0.5">Catálogo completo</p>
+            </div>
+            <i class="fa-solid fa-arrow-right ml-auto text-slate-700 group-hover:text-blue-400 group-hover:translate-x-1 transition-all" />
+          </a>
+
+          <a
+            href="/noticias"
+            class="
+              group flex items-center gap-4 p-5 rounded-2xl
+              bg-slate-900/60 border border-slate-700/50
+              hover:border-cyan-500/30 hover:-translate-y-1
+              hover:shadow-xl hover:shadow-cyan-900/15
+              transition-all duration-400
+            "
+          >
+            <div class="w-12 h-12 rounded-xl bg-cyan-600/15 border border-cyan-700/30 flex items-center justify-center flex-shrink-0 group-hover:bg-cyan-600/25 transition-colors">
+              <i class="fa-solid fa-newspaper text-cyan-400 text-lg" />
+            </div>
+            <div>
+              <h3 class="font-['Bebas_Neue'] text-xl text-white tracking-wide group-hover:text-cyan-200 transition-colors">Últimas Noticias</h3>
+              <p class="text-slate-500 text-xs mt-0.5">Actualidad del cine</p>
+            </div>
+            <i class="fa-solid fa-arrow-right ml-auto text-slate-700 group-hover:text-cyan-400 group-hover:translate-x-1 transition-all" />
+          </a>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <Footer />
+</Layout>
