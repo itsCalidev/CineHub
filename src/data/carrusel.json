@@ -8,7 +8,7 @@
     "descripcion": "El equipo de los Guardianes emprende una misión que los pondrá a prueba como nunca antes. El pasado de Rocket amenaza con desmoronar al grupo, en una aventura cósmica llena de humor y corazón.",
     "imagen": "https://image.tmdb.org/t/p/original/r2J02Z2OpNTctfOSN1Ydgii51I3.jpg",
     "calificacion": 8.0,
-    "slug": "guardianes-galaxia-vol3"
+    "slug": "#"
   },
   {
     "id": 2,
@@ -19,7 +19,7 @@
     "descripcion": "La historia del físico teórico J. Robert Oppenheimer y su papel en el desarrollo de la primera bomba atómica durante la Segunda Guerra Mundial. Una obra monumental de Nolan.",
     "imagen": "https://image.tmdb.org/t/p/original/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg",
     "calificacion": 8.9,
-    "slug": "oppenheimer"
+    "slug": "#"
   },
   {
     "id": 3,
@@ -30,7 +30,7 @@
     "descripcion": "Paul Atreides se une a los Fremen y emprende un viaje espiritual y bélico para vengar a su familia mientras intenta evitar el terrible futuro que solo él puede prever.",
     "imagen": "https://image.tmdb.org/t/p/original/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg",
     "calificacion": 8.5,
-    "slug": "dune-parte-dos"
+    "slug": "#"
   },
   {
     "id": 4,
@@ -41,7 +41,7 @@
     "descripcion": "Bella Baxter, una joven revivida por un científico excéntrico, huye con un abogado libertino y atraviesa un mundo lleno de aventuras que la llevan a su propia liberación.",
     "imagen": "https://image.tmdb.org/t/p/w600_and_h900_face/9OYMVcP2zyw0zpWOTuxlDo2MsMw.jpg",
     "calificacion": 8.0,
-    "slug": "poor-things"
+    "slug": "#"
   },
   {
     "id": 5,
@@ -52,6 +52,6 @@
     "descripcion": "En la década de 1920, los Osage de Oklahoma se convierten en objetivo de una serie de asesinatos en serie tras descubrir petróleo en sus tierras. El FBI investiga el caso.",
     "imagen": "https://media.themoviedb.org/t/p/w300_and_h450_face/731ydMfVJaIyR1bhFEeX7rubqGH.jpg",
     "calificacion": 7.7,
-    "slug": "killers-flower-moon"
+    "slug": "#"
   }
 ]
