@@ -15,7 +15,7 @@
   {
     "id": 2,
     "titulo": "Poor Things",
-    "imagen": "https://image.tmdb.org/t/p/w780/kCGlIMHnOm8JPXILbe2jnUNiPUCr.jpg",
+    "imagen": "https://image.tmdb.org/t/p/w600_and_h900_face/9OYMVcP2zyw0zpWOTuxlDo2MsMw.jpg",
     "descripcion": "Yorgos Lanthimos construyó con Poor Things la fábula surrealista más audaz del año. Emma Stone encarna a Bella Baxter en una actuación que redefine los límites de la interpretación. El film arrasó en Venecia con el León de Oro y se coronó en los BAFTA como la producción más celebrada de la temporada de premios.",
     "anio": 2024,
     "nombre_premio": "León de Oro — Festival de Venecia",
@@ -28,7 +28,7 @@
   {
     "id": 3,
     "titulo": "Anatomía de una Caída",
-    "imagen": "https://image.tmdb.org/t/p/w780/rAHVFTN1KKQVxR3xDFUHTdFGqA2.jpg",
+    "imagen": "https://media.themoviedb.org/t/p/w300_and_h450_face/vGzjaQyv4NPjhgI0hHmKXz3Orjs.jpg",
     "descripcion": "La película de Justine Triet atrapó al mundo con un thriller judicial de precisión quirúrgica. Sandra Hüller protagoniza esta disección del matrimonio, la culpa y la verdad que conquistó la Palma de Oro de Cannes con una unanimidad que no se veía desde hace años en el festival más importante del mundo.",
     "anio": 2023,
     "nombre_premio": "Palma de Oro — Festival de Cannes",
@@ -54,7 +54,7 @@
   {
     "id": 5,
     "titulo": "La Zona de Interés",
-    "imagen": "https://image.tmdb.org/t/p/w780/hUu9zyZmKuuq8oXjTJ6ca50CEZY.jpg",
+    "imagen": "https://media.themoviedb.org/t/p/w300_and_h450_face/jjBgrAsz0vFerjesnM3NnyU3Bm5.jpg",
     "descripcion": "Jonathan Glazer concibió el retrato del horror más perturbador de la historia reciente del cine: la vida cotidiana de Rudolf Höss y su familia junto a los muros de Auschwitz. Un ejercicio de distancia formal que resultó ser la aproximación más visceral posible al horror del Holocausto. Dos Oscar y una aclamación mundial unánime.",
     "anio": 2024,
     "nombre_premio": "Mejor Película Internacional — Premios Óscar",
@@ -93,7 +93,7 @@
   {
     "id": 8,
     "titulo": "El Poder del Perro",
-    "imagen": "https://image.tmdb.org/t/p/w780/kHaOBpbfhkQbhMJpFJaeyHJCovS.jpg",
+    "imagen": "https://media.themoviedb.org/t/p/w300_and_h450_face/1l9aOf6vL01NAiljwDczv3YlwHN.jpg",
     "descripcion": "Jane Campion regresó al cine con una obra maestra del western psicológico que conquistó los festivales de Venecia y los premios BAFTA. Benedict Cumberbatch entrega la actuación de su carrera en este retrato lacerante de la masculinidad tóxica ambientado en los ranchos de Montana. Un film que crece en cada visionado.",
     "anio": 2022,
     "nombre_premio": "Mejor Director — Premios Óscar",

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <defs>
+    <clipPath id="cClip">
+      <path d="M 207.8,214.2
+               A 93,93 0 1,1 207.8,71.8
+               L 184.7,99.3
+               A 57,57 0 1,0 184.7,186.7 Z"/>
+    </clipPath>
+    <linearGradient id="baseGrad"
+      x1="58" y1="218" x2="210" y2="72"
+      gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#050224"/>
+      <stop offset="22%"  stop-color="#0B1068"/>
+      <stop offset="50%"  stop-color="#1E38D4"/>
+      <stop offset="78%"  stop-color="#3A60F5"/>
+      <stop offset="100%" stop-color="#5272FF"/>
+    </linearGradient>
+    <radialGradient id="hlGrad"
+      cx="186" cy="99" r="115"
+      gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#88B2FF" stop-opacity="0.80"/>
+      <stop offset="35%"  stop-color="#5C88FF" stop-opacity="0.45"/>
+      <stop offset="75%"  stop-color="#3050E8" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#3050E8" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="shadowGrad"
+      cx="207" cy="143" r="80"
+      gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#000015" stop-opacity="0.50"/>
+      <stop offset="100%" stop-color="#000015" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Sin fondo: transparente -->
+  <rect width="300" height="300" fill="url(#baseGrad)"   clip-path="url(#cClip)"/>
+  <rect width="300" height="300" fill="url(#hlGrad)"     clip-path="url(#cClip)"/>
+  <rect width="300" height="300" fill="url(#shadowGrad)" clip-path="url(#cClip)"/>
+</svg>

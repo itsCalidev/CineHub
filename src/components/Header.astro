@@ -28,8 +28,14 @@ const currentPath = Astro.url.pathname;
       >
         <i class="fa-solid fa-film text-white text-sm"></i>
       </div>
-      <span class="font-['Bebas_Neue'] text-2xl tracking-widest">
-        <span class="text-blue-500">CINE</span><span class="text-white">-HUB</span>
+      <span class="font-['Bebas_Neue'] text-2xl tracking-widest flex items-center">
+        <img
+          src="/cinehub-logo-spin.svg"
+          alt="C"
+          aria-hidden="true"
+          class="spin-c-nav"
+        />
+        <span class="text-blue-500">INE</span><span class="text-white">-HUB</span>
       </span>
     </a>
 
@@ -124,6 +130,22 @@ const currentPath = Astro.url.pathname;
     </a>
   </div>
 </header>
+
+<style>
+  .spin-c-nav {
+    width: 1.2em;
+    height: 1.2em;
+    margin-bottom: 0.04em;
+    flex-shrink: 0;
+    animation: spinC 2s linear infinite;
+    margin-right: -0.15em;
+  }
+
+  @keyframes spinC {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+</style>
 
 <script>
   const header = document.getElementById("main-header");

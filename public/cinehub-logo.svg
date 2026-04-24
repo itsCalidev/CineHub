@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <!-- Black rounded square background -->
+  <rect width="300" height="300" fill="#000" rx="22"/>
+
+  <!--
+    C shape: annular sector open on the right.
+    Center: (150, 128)
+    Outer radius: 82  Inner radius: 55
+    Gap half-angle: 47°  →  cos47≈0.682  sin47≈0.731
+
+    Outer tips  (angle ±47°):
+      lower  (150 + 82·cos47,  128 + 82·sin47) = (205.9, 187.9)
+      upper  (150 + 82·cos47,  128 − 82·sin47) = (205.9,  68.1)
+
+    Inner tips:
+      upper  (150 + 55·cos47,  128 − 55·sin47) = (187.5,  87.8)
+      lower  (150 + 55·cos47,  128 + 55·sin47) = (187.5, 168.2)
+
+    Path:  start at outer-lower → large CW arc to outer-upper
+           → line to inner-upper → large CCW arc to inner-lower → close
+  -->
+  <path
+    d="M 205.9,187.9
+       A 82,82 0 1,1 205.9,68.1
+       L 187.5,87.8
+       A 55,55 0 1,0 187.5,168.2
+       Z"
+    fill="white"/>
+
+  <!--
+    Two small decorative )-arcs inside the C gap.
+    Both centred at cx=193, cy=128 (slightly right of inner edge).
+
+    Arc 1 – inner, shorter
+      r=14, half-angle=40°  →  cos40≈0.766  sin40≈0.643
+      right-most x = 193+14 = 207
+      top  : (193+14·0.766, 128−14·0.643) = (203.7, 119.0)
+      bot  : (203.7, 137.0)
+
+    Arc 2 – outer, taller
+      r=21, half-angle=33°  →  cos33≈0.839  sin33≈0.545
+      right-most x = 193+21 = 214
+      top  : (193+21·0.839, 128−21·0.545) = (210.6, 116.6)
+      bot  : (210.6, 139.4)
+  -->
+  <!-- inner small arc -->
+  <path
+    d="M 203.7,119.0 A 14,14 0 0,1 203.7,137.0"
+    fill="none" stroke="white" stroke-width="6.5" stroke-linecap="round"/>
+
+  <!-- outer small arc -->
+  <path
+    d="M 210.6,116.6 A 21,21 0 0,1 210.6,139.4"
+    fill="none" stroke="white" stroke-width="6.5" stroke-linecap="round"/>
+
+  <!-- CINE-HUB text -->
+  <text
+    x="150" y="256"
+    fill="white"
+    font-family="Arial, Helvetica, sans-serif"
+    font-weight="bold"
+    font-size="27"
+    letter-spacing="3"
+    text-anchor="middle">CINE-HUB</text>
+</svg>
