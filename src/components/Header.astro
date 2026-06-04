@@ -1,15 +1,24 @@
 ---
 // src/components/Header.astro
+
 const navLinks = [
-  { href: "/", label: "Inicio" },
-  { href: "/peliculas", label: "Películas" },
-  { href: "/series", label: "Series" },
-  { href: "/resenas", label: "Reseñas" },
-  { href: "/noticias", label: "Noticias" },
-  { href: "/galardonadas", label: "Galardonadas" },
+  { href: "/",            label: "Inicio"       },
+  { href: "/peliculas",   label: "Películas"    },
+  { href: "/series",      label: "Series"       },
+  { href: "/resenas",     label: "Reseñas"      },
+  { href: "/noticias",    label: "Noticias"     },
+  { href: "/galardonadas",label: "Galardonadas" },
 ];
 
-const currentPath = Astro.url.pathname;
+const normalize = (p: string): string => p.length > 1 ? p.replace(/\/$/, "") : p;
+
+const currentPath = normalize(Astro.url.pathname);
+
+const isActive = (href: string): boolean => {
+  const normHref = normalize(href);
+  if (normHref === "/") return currentPath === "/";
+  return currentPath === normHref || currentPath.startsWith(normHref + "/");
+};
 ---
 
 <header
@@ -22,6 +31,7 @@ const currentPath = Astro.url.pathname;
     class="flex items-center justify-between px-6 lg:px-12 py-4"
     aria-label="Navegación principal"
   >
+    <!-- Logo -->
     <a href="/" class="flex items-center gap-2 group" aria-label="Cine-Hub Inicio">
       <div
         class="w-9 h-9 bg-blue-600 rounded flex items-center justify-center shadow-lg shadow-blue-900/50 group-hover:bg-blue-500 transition-colors"
@@ -39,33 +49,32 @@ const currentPath = Astro.url.pathname;
       </span>
     </a>
 
+    <!-- Desktop nav -->
     <ul class="hidden lg:flex items-center gap-1" role="list">
-      {
-        navLinks.map(({ href, label }) => (
+      {navLinks.map(({ href, label }) => {
+        const active = isActive(href);
+        return (
           <li>
             <a
               href={href}
+              aria-current={active ? "page" : undefined}
               class:list={[
                 "relative px-4 py-2 text-sm font-medium tracking-wide transition-colors duration-200 rounded",
                 "hover:text-blue-400 group",
-                currentPath === href
-                  ? "text-blue-400"
-                  : "text-slate-300",
+                active ? "text-blue-400" : "text-slate-300",
               ]}
             >
               {label}
               <span
                 class:list={[
                   "absolute bottom-0 left-1/2 -translate-x-1/2 h-[2px] bg-blue-500 transition-all duration-300 rounded-full",
-                  currentPath === href
-                    ? "w-4/5"
-                    : "w-0 group-hover:w-4/5",
+                  active ? "w-4/5" : "w-0 group-hover:w-4/5",
                 ]}
               />
             </a>
           </li>
-        ))
-      }
+        );
+      })}
     </ul>
 
     <div class="flex items-center gap-3">
@@ -97,29 +106,37 @@ const currentPath = Astro.url.pathname;
     </div>
   </nav>
 
+  <!-- Mobile menu -->
   <div
     id="mobile-menu"
     class="lg:hidden hidden border-t border-slate-800/60 bg-[#0a0f1a]/98 backdrop-blur-xl px-6 pb-6"
   >
     <ul class="mt-4 space-y-1" role="list">
-      {
-        navLinks.map(({ href, label }) => (
+      {navLinks.map(({ href, label }) => {
+        const active = isActive(href);
+        return (
           <li>
             <a
               href={href}
+              aria-current={active ? "page" : undefined}
               class:list={[
                 "flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-colors",
-                currentPath === href
+                active
                   ? "text-blue-400 bg-blue-900/20"
                   : "text-slate-300 hover:text-blue-400 hover:bg-slate-800/50",
               ]}
             >
-              <span class="w-1.5 h-1.5 bg-blue-500 rounded-full opacity-70" />
+              <span
+                class:list={[
+                  "w-1.5 h-1.5 rounded-full flex-shrink-0",
+                  active ? "bg-blue-400" : "bg-blue-500 opacity-70",
+                ]}
+              />
               {label}
             </a>
           </li>
-        ))
-      }
+        );
+      })}
     </ul>
     <a
       href="#contacto"
@@ -148,8 +165,8 @@ const currentPath = Astro.url.pathname;
 </style>
 
 <script>
+  // ── Scroll effect ─────────────────────────────────────────────────────────
   const header = document.getElementById("main-header");
-  const nav = header?.querySelector("nav");
 
   window.addEventListener("scroll", () => {
     if (window.scrollY > 60) {
@@ -159,9 +176,10 @@ const currentPath = Astro.url.pathname;
     }
   });
 
-  const toggle = document.getElementById("menu-toggle");
+  // ── Hamburger toggle ──────────────────────────────────────────────────────
+  const toggle     = document.getElementById("menu-toggle");
   const mobileMenu = document.getElementById("mobile-menu");
-  const lines = toggle?.querySelectorAll(".menu-line");
+  const lines      = toggle?.querySelectorAll(".menu-line");
 
   toggle?.addEventListener("click", () => {
     const isOpen = !mobileMenu?.classList.contains("hidden");
@@ -169,13 +187,25 @@ const currentPath = Astro.url.pathname;
     toggle.setAttribute("aria-expanded", String(!isOpen));
 
     if (!isOpen && lines) {
-      lines[0].classList.add("rotate-45", "translate-y-[7px]");
-      lines[1].classList.add("opacity-0", "w-0");
+      lines[0].classList.add("rotate-45",  "translate-y-[7px]");
+      lines[1].classList.add("opacity-0",  "w-0");
       lines[2].classList.add("-rotate-45", "-translate-y-[7px]");
     } else if (lines) {
-      lines[0].classList.remove("rotate-45", "translate-y-[7px]");
-      lines[1].classList.remove("opacity-0", "w-0");
+      lines[0].classList.remove("rotate-45",  "translate-y-[7px]");
+      lines[1].classList.remove("opacity-0",  "w-0");
       lines[2].classList.remove("-rotate-45", "-translate-y-[7px]");
     }
+  });
+
+  mobileMenu?.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => {
+      mobileMenu.classList.add("hidden");
+      toggle?.setAttribute("aria-expanded", "false");
+      if (lines) {
+        lines[0].classList.remove("rotate-45",  "translate-y-[7px]");
+        lines[1].classList.remove("opacity-0",  "w-0");
+        lines[2].classList.remove("-rotate-45", "-translate-y-[7px]");
+      }
+    });
   });
 </script>
